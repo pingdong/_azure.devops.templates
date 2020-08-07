@@ -6,7 +6,6 @@
 parameters:
 - name: projectName
   type: string
-  default: ${{ variables['Build.DefinitionName'] }}
 
 variables:
 - group : Build
