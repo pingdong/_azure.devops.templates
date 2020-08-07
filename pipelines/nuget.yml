@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 parameters:
-- name: parameter.projectName
+- name: projectName
   type: string
   default: ${{ variables['Build.DefinitionName'] }}
 
@@ -28,7 +28,7 @@ stages:
     - name  : local.codecoveragehistory.directory
       value : '$(Build.ArtifactStagingDirectory)/history'
     - name  : local.codecoveragehistory.directory
-      value : ${{ lower(parameters['parameter.projectName']) }}.$(Build.SourceBranchName)
+      value : ${{ lower(parameters['projectName']) }}.$(Build.SourceBranchName)
     - name  : 'disable.coverage.autogenerate'
       value : 'true'
     steps:
@@ -44,8 +44,8 @@ stages:
       inputs:
         SonarCloud: SonarCloud
         organization: $(unit_test.sonarcloud.organization)
-        projectKey: ${{ lower(parameters['parameter.projectName']) }}
-        projectName: ${{ lower(parameters['parameter.projectName']) }}
+        projectKey: ${{ lower(parameters['projectName']) }}
+        projectName: ${{ lower(parameters['projectName']) }}
         extraProperties: |
           sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
           sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
