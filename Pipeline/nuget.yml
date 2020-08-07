@@ -7,9 +7,6 @@ parameters:
 - name: parameter.projectName
   type: string
 
-trigger:
-- '*'
-
 variables:
 - group : Build
 - name  : local.artifact
