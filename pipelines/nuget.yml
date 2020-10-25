@@ -9,7 +9,7 @@ parameters:
 
 variables:
 - group : Build
-- name  : local.artifact
+- name  : local#artifact
   value : 'packages'
 
 stages:
@@ -19,14 +19,14 @@ stages:
   - job: Testing
     displayName: Testing
     pool:
-      vmImage: $(build.pool)
+      vmImage: $(build#pool)
     workspace:
       clean: all 
     variables:
     - group : Build.UnitTest
-    - name  : local.codecoveragehistory.directory
+    - name  : local.testing#codecoveragehistory.directory
       value : '$(Build.ArtifactStagingDirectory)/history'
-    - name  : local.codecoveragehistory.directory
+    - name  : local.testing#codecoveragehistory.directory
       value : ${{ lower(parameters['projectName']) }}.$(Build.SourceBranchName)
     - name  : 'disable.coverage.autogenerate'
       value : 'true'
@@ -42,7 +42,7 @@ stages:
         )
       inputs:
         SonarCloud: SonarCloud
-        organization: $(unit_test.sonarcloud.organization)
+        organization: $(build.unittest#sonarcloud.organization)
         projectKey: ${{ lower(parameters['projectName']) }}
         projectName: ${{ lower(parameters['projectName']) }}
         extraProperties: |
@@ -55,10 +55,10 @@ stages:
       continueOnError: true
       inputs:
         command: download
-        downloadDirectory: $(local.codecoveragehistory.directory)
+        downloadDirectory: $(local.testing#codecoveragehistory.directory)
         feedsToUse: internal
-        vstsFeed: $(unit_test.coverage.history.feed)
-        vstsFeedPackage: $(local.codecoveragehistory.directory)
+        vstsFeed: $(build.unittest#coverage.history.feed)
+        vstsFeedPackage: $(local.testing#codecoveragehistory.directory)
         vstsPackageVersion: '0.*'
 
     # Building
@@ -67,14 +67,14 @@ stages:
       inputs:
         projects: '**/*.sln'    # The <ProjectGuid> element is not required if you build a solution (sln) containing that project.
                                 # for SonarQube
-        arguments: '--configuration $(build.configuration.release)'
+        arguments: '--configuration $(build#configuration.release)'
 
     # Testing
     - task: DotNetCoreCLI@2
       displayName: Running Unit Tests
       inputs:
         command: test
-        arguments: '--no-build --configuration $(build.configuration.release) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+        arguments: '--no-build --configuration $(build#configuration.release) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
         publishTestResults: true
         projects: '**/*.[Uu]nit[Tt]ests/*.csproj'
 
@@ -86,17 +86,17 @@ stages:
         reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
         targetdir: $(Build.SourcesDirectory)/Coverage
         reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges
-        historydir: $(local.codecoveragehistory.directory)
+        historydir: $(local.testing#codecoveragehistory.directory)
 
     - task: UniversalPackages@0
       displayName: Persisting Test Coverage History
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       inputs:
         command: publish
-        publishDirectory: $(local.codecoveragehistory.directory)
+        publishDirectory: $(local.testing#codecoveragehistory.directory)
         feedsToUsePublish: internal
-        vstsFeedPublish: $(unit_test.coverage.history.feed)
-        vstsFeedPackagePublish: $(local.codecoveragehistory.directory)
+        vstsFeedPublish: $(build.unittest#coverage.history.feed)
+        vstsFeedPackagePublish: $(local.testing#codecoveragehistory.directory)
         versionOption: patch
         packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
         verbosity: Information
@@ -146,7 +146,7 @@ stages:
     displayName: Prerelease
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     pool:
-      vmImage: $(build.pool)
+      vmImage: $(build#pool)
     workspace:
       clean: all
     variables:
@@ -156,19 +156,19 @@ stages:
       displayName: Creating Prerelease Package
       inputs:
         command: pack
-        buildProperties: $(nuget.pack.properties)
-        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local.artifact)'
-        arguments: '--configuration $(build.configuration.release)'
+        buildProperties: $(build.nuget#pack.properties)
+        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local#artifact)'
+        arguments: '--configuration $(build#configuration.release)'
 
-    - publish: $(Build.ArtifactStagingDirectory)/$(local.artifact)
+    - publish: $(Build.ArtifactStagingDirectory)/$(local#artifact)
       displayName: Publishing
-      artifact: $(local.artifact)
+      artifact: $(local#artifact)
 
   - job: Release
     displayName: Release
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     pool:
-      vmImage: $(build.pool)
+      vmImage: $(build#pool)
     workspace:
       clean: all
     variables:
@@ -178,12 +178,12 @@ stages:
       displayName: Create Release Package
       inputs:
         command: pack
-        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local.artifact)'
-        arguments: '--configuration $(build.configuration.release)' 
+        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local#artifact)'
+        arguments: '--configuration $(build#configuration.release)' 
 
-    - publish: $(Build.ArtifactStagingDirectory)/$(local.artifact)
+    - publish: $(Build.ArtifactStagingDirectory)/$(local#artifact)
       displayName: Publishing
-      artifact: $(local.artifact)
+      artifact: $(local#artifact)
 
 - stage: Publish
   displayName: Publish
@@ -195,7 +195,7 @@ stages:
     environment: NuGet-Prerelease
     condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
     pool:
-      vmImage: $(build.pool)
+      vmImage: $(build#pool)
     workspace:
       clean: all
     variables:
@@ -208,22 +208,22 @@ stages:
 
           - download: current
             displayName: Download artifacts
-            artifact: $(local.artifact)
+            artifact: $(local#artifact)
 
           - task: NuGetCommand@2
-            displayName: 'Pushing to Feed: $(nuget.artifact.feed.prerelease)'
+            displayName: 'Pushing to Feed: $(build.nuget#artifact.feed.prerelease)'
             inputs:
               command: push
-              packagesToPush: '$(Agent.BuildDirectory)/$(local.artifact)/*.nupkg'
+              packagesToPush: '$(Agent.BuildDirectory)/$(local#artifact)/*.nupkg'
               nuGetFeedType: internal
-              publishVstsFeed: $(nuget.artifact.feed.prerelease)
+              publishVstsFeed: $(build.nuget#artifact.feed.prerelease)
 
   - deployment:
     displayName: Release
     environment: NuGet
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     pool:
-      vmImage: $(build.pool)
+      vmImage: $(build#pool)
     workspace:
       clean: all
     variables:
@@ -236,15 +236,15 @@ stages:
 
           - download: current
             displayName: Download artifacts
-            artifact: $(local.artifact)
+            artifact: $(local#artifact)
 
           - task: NuGetCommand@2
-            displayName: 'Pushing to Feed: $(nuget.artifact.feed.production)'
+            displayName: 'Pushing to Feed: $(build.nuget#artifact.feed.production)'
             inputs:
               command: push
-              packagesToPush: '$(Agent.BuildDirectory)/$(local.artifact)/*.nupkg'
+              packagesToPush: '$(Agent.BuildDirectory)/$(local#artifact)/*.nupkg'
               nuGetFeedType: internal
-              publishVstsFeed: $(nuget.artifact.feed.production)
+              publishVstsFeed: $(build.nuget#artifact.feed.production)
               allowPackageConflicts: true
 
           - task: DotNetCoreCLI@2
@@ -252,4 +252,4 @@ stages:
             inputs:
               command: custom
               custom: nuget
-              arguments: 'push $(Agent.BuildDirectory)/$(local.artifact)/*.nupkg --source $(nuget.org.source) --api-key $(nuget.org.apiKey) --skip-duplicate'
+              arguments: 'push $(Agent.BuildDirectory)/$(local#artifact)/*.nupkg --source $(build.nuget#org.source) --api-key $(build.nuget#org.apiKey) --skip-duplicate'
