@@ -36,6 +36,12 @@ jobs:
 
   - task: SonarCloudPrepare@1
     displayName: Preparing SonarCloud Code Analysis
+    condition: |
+      or
+      (
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        eq(variables['Build.Reason'], 'PullRequest')
+      )
     inputs:
       SonarCloud: SonarCloud
       organization: $(test.unit#sonarcloud.organization)
@@ -65,12 +71,20 @@ jobs:
   # Generating Coverage Report
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: Generating Test Coverage Report
-    condition: ne(variables['Build.Reason'], 'PullRequest')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     inputs:
       reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
       targetdir: $(Build.SourcesDirectory)/Coverage
       reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges
       historydir: $(local#codecoveragehistory.directory)
+
+  - task: PublishCodeCoverageResults@1
+    displayName: Publishing Test Coverage Report
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
+      reportDirectory: $(Build.SourcesDirectory)/Coverage
 
   - task: UniversalPackages@0
     displayName: Saving Test Coverage History
@@ -85,16 +99,20 @@ jobs:
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
       verbosity: Information
 
-  - task: PublishCodeCoverageResults@1
-    displayName: Publishing Test Coverage Report
-    condition: ne(variables['Build.Reason'], 'PullRequest')
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
-      reportDirectory: $(Build.SourcesDirectory)/Coverage
-
   - task: SonarCloudAnalyze@1
     displayName: Running SonarCloud Code Analysis
+    condition: |
+      or
+      (
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        eq(variables['Build.Reason'], 'PullRequest')
+      )
 
   - task: SonarCloudPublish@1
     displayName: Publishing SonarCloud Analysis Result
+    condition: |
+      or
+      (
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        eq(variables['Build.Reason'], 'PullRequest')
+      )
