@@ -7,8 +7,7 @@ jobs:
 - job: UnitTesting
   displayName: Unit Testing
   pool:
-    name: ${{ variables['pipeline#pool'] }}
-    vmImage: ${{ variables['pipeline#vmImage'] }}
+    vmImage: $(pipeline#vmImage)
   workspace:
     clean: all
   variables:

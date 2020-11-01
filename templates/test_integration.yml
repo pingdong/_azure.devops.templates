@@ -2,8 +2,7 @@ jobs:
 - job: IntegrationTesting
   displayName: Integration Testing
   pool:
-    name: ${{ variables['pipeline#pool'] }}
-    vmImage: ${{ variables['pipeline#vmImage'] }}
+    vmImage: $(pipeline#vmImage)
   workspace:
     clean: all
   variables:
