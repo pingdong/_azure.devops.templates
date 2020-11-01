@@ -71,7 +71,6 @@ jobs:
   # Generating Coverage Report
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: Generating Test Coverage Report
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     inputs:
       reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
       targetdir: $(Build.SourcesDirectory)/Coverage
@@ -80,7 +79,6 @@ jobs:
 
   - task: PublishCodeCoverageResults@1
     displayName: Publishing Test Coverage Report
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
