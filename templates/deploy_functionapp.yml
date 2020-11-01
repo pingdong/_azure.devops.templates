@@ -20,8 +20,8 @@ jobs:
   displayName: Deploying
   environment: ${{ parameters.environment }}
   pool:
-    name: Default
-    vmImage: $(pipeline#pool)
+    name: ${{ variables['pipeline#pool'] }}
+    vmImage: ${{ variables['pipeline#vmImage'] }}
   variables:
   - group : Pipeline
   strategy:

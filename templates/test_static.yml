@@ -2,7 +2,8 @@ jobs:
 - job: StaticTesting
   displayName: Static Testing
   pool:
-    vmImage: $(pipeline#pool)
+    name: ${{ variables['pipeline#pool'] }}
+    vmImage: ${{ variables['pipeline#vmImage'] }}
   workspace:
     clean: all
   variables:

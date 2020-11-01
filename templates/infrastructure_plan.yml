@@ -7,7 +7,8 @@ jobs:
 - job: Planning
   displayName: Planning
   pool:
-    vmImage: $(pipeline#pool)
+    name: ${{ variables['pipeline#pool'] }}
+    vmImage: ${{ variables['pipeline#vmImage'] }}
   workspace:
     clean: all 
   variables:
