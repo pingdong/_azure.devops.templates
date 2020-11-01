@@ -12,7 +12,6 @@ jobs:
     clean: all 
   variables:
   - group: Pipeline
-  - group: Infrastructure.Dev
   steps:
   - task: DotNetCoreCLI@2
     displayName: Restoring dependencies
