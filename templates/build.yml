@@ -27,7 +27,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: false
-      projects: '**/$(parameters.appName).csproj'
+      projects: '**/${{ parameters.appName }}.csproj'
       arguments: '--no-restore --configuration $(build#configuration.release) --output $(Build.ArtifactStagingDirectory)'
 
   # - job: BuildDBMigrationScript
