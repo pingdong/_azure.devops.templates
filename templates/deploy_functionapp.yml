@@ -22,7 +22,7 @@ jobs:
   pool:
     vmImage: $(pipeline#pool)
   variables:
-  - group: Pipeline
+  - group : Pipeline
   strategy:
     runOnce:
       deploy:
