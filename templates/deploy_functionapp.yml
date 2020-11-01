@@ -1,28 +1,26 @@
 parameters:
+- name: vmImage
+  type: string
 - name: environment
   type: string
-  default: ''
+- name: azureSubscription
+  type: string
 - name: funcName
   type: string
-  default: ''
 - name: enableSlot
   type: boolean
   default: false
 - name: resourceGroupName
   type: string
-  default: ''
 - name: slotName
   type: string
-  default: ''
 
 jobs:
 - deployment: Deploying
   displayName: Deploying
   environment: ${{ parameters.environment }}
   pool:
-    vmImage: $(pipeline#vmImage)
-  variables:
-  - group : Pipeline
+    vmImage: ${{ parameters.vmImage }}
   strategy:
     runOnce:
       deploy:
@@ -35,7 +33,7 @@ jobs:
           - task: AzureWebApp@1
             displayName: Deploying
             inputs:
-              azureSubscription: Azure
+              azureSubscription: ${{ parameters.azureSubscription }}
               appType: functionApp
               appName: ${{ parameters.funcName }}
               package: '$(Pipeline.Workspace)/drop/*.zip'
@@ -44,7 +42,7 @@ jobs:
           - task: AzureWebApp@1
             displayName: Deploying to Slot ${{ parameters.slotName }}
             inputs:
-              azureSubscription: Azure
+              azureSubscription: ${{ parameters.azureSubscription }}
               appType: functionApp
               appName: ${{ parameters.funcName }}
               package: '$(Pipeline.Workspace)/drop/*.zip'
@@ -55,7 +53,7 @@ jobs:
           - task: AzureAppServiceManage@0
             displayName: Swapping Slot $(deploy#venue.app.slot) with Production
             inputs:
-              azureSubscription: Azure
+              azureSubscription: ${{ parameters.azureSubscription }}
               action: 'Swap Slots'
               WebAppName: ${{ parameters.funcName }}
               ResourceGroupName: ${{ parameters.resourcegroupName }}
