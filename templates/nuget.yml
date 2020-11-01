@@ -1,0 +1,140 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+parameters:
+- name: libraryName
+  type: string
+
+variables:
+- group : Build
+- name  : local#artifact
+  value : 'packages'
+
+stages:
+- stage: QualityControl
+  displayName: Quality Control
+  jobs:
+  - template: templates\static_test.yml@templates
+
+  - template: templates\unit_test.yml@templates
+    parameters:
+      appName: ${{ variables['local#library.name'] }}  # Can't use $(local@app.name) here
+
+- stage: Package
+  displayName: Packaging
+  dependsOn: QualityControl
+  condition: succeeded()
+  jobs:
+  - job: Prerelease
+    displayName: Prerelease
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    pool:
+      vmImage: $(build#pool)
+    workspace:
+      clean: all
+    variables:
+    - group: Build.NuGet
+    steps:      
+    - task: DotNetCoreCLI@2
+      displayName: Creating Prerelease Package
+      inputs:
+        command: pack
+        buildProperties: $(build.nuget#pack.properties)
+        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local#artifact)'
+        arguments: '--configuration $(build#configuration.release)'
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(local#artifact)
+      displayName: Publishing
+      artifact: $(local#artifact)
+
+  - job: Release
+    displayName: Release
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    pool:
+      vmImage: $(build#pool)
+    workspace:
+      clean: all
+    variables:
+    - group: Build.NuGet
+    steps:      
+    - task: DotNetCoreCLI@2
+      displayName: Create Release Package
+      inputs:
+        command: pack
+        packDirectory: '$(Build.ArtifactStagingDirectory)/$(local#artifact)'
+        arguments: '--configuration $(build#configuration.release)' 
+
+    - publish: $(Build.ArtifactStagingDirectory)/$(local#artifact)
+      displayName: Publishing
+      artifact: $(local#artifact)
+
+- stage: Publish
+  displayName: Publish
+  dependsOn: Package
+  condition: succeeded()
+  jobs:
+  - deployment:
+    displayName: Prerelease
+    environment: NuGet-Prerelease
+    condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
+    pool:
+      vmImage: $(build#pool)
+    workspace:
+      clean: all
+    variables:
+    - group: Build.NuGet
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+
+          - download: current
+            displayName: Download artifacts
+            artifact: $(local#artifact)
+
+          - task: NuGetCommand@2
+            displayName: 'Pushing to Feed: $(build.nuget#artifact.feed.prerelease)'
+            inputs:
+              command: push
+              packagesToPush: '$(Agent.BuildDirectory)/$(local#artifact)/*.nupkg'
+              nuGetFeedType: internal
+              publishVstsFeed: $(build.nuget#artifact.feed.prerelease)
+
+  - deployment:
+    displayName: Release
+    environment: NuGet
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    pool:
+      vmImage: $(build#pool)
+    workspace:
+      clean: all
+    variables:
+    - group: Build.NuGet
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - checkout: none
+
+          - download: current
+            displayName: Download artifacts
+            artifact: $(local#artifact)
+
+          - task: NuGetCommand@2
+            displayName: 'Pushing to Feed: $(build.nuget#artifact.feed.production)'
+            inputs:
+              command: push
+              packagesToPush: '$(Agent.BuildDirectory)/$(local#artifact)/*.nupkg'
+              nuGetFeedType: internal
+              publishVstsFeed: $(build.nuget#artifact.feed.production)
+              allowPackageConflicts: true
+
+          - task: DotNetCoreCLI@2
+            displayName: Pushing to NuGet.org
+            inputs:
+              command: custom
+              custom: nuget
+              arguments: 'push $(Agent.BuildDirectory)/$(local#artifact)/*.nupkg --source $(build.nuget#org.source) --api-key $(build.nuget#org.apiKey) --skip-duplicate'
