@@ -20,7 +20,7 @@ jobs:
   displayName: Deploying
   environment: ${{ parameters.environment }}
   pool:
-    vmImage: $(pipeline#pool)
+    vmImage: ubuntu-latest # $(pipeline#pool)
   variables:
   - group : Pipeline
   strategy:
