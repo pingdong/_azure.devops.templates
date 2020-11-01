@@ -76,7 +76,6 @@ jobs:
       targetdir: $(Build.SourcesDirectory)/Coverage
       reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges;SonarQube
       historydir: $(local#codecoveragehistory.directory)
-      filefilters: '-:*[Tt]ests.dll;-:*[Tt]estings.dll;'
 
   - task: PublishCodeCoverageResults@1
     displayName: Publishing Test Coverage Report
