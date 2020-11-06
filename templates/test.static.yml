@@ -1,13 +1,14 @@
+parameters:
+- name: poolImage
+  type: string
+
 jobs:
 - job: StaticTesting
   displayName: Static Testing
   pool:
-    vmImage: $(pipeline#vmImage)
+    poolImage: ${{ parameters["poolImage"] }}
   workspace:
     clean: all
-  variables:
-  - group : Pipeline
-  - group : Test.Static
   steps:
   # WhiteSource Bolt
   - task: WhiteSource Bolt@20

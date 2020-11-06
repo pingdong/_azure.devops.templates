@@ -1,14 +1,14 @@
+parameters:
+- name: poolImage
+  type: string
+
 jobs: 
 - job: IntegrationTesting
   displayName: Integration Testing
   pool:
-    vmImage: $(pipeline#vmImage)
+    poolImage: ${{ parameters["poolImage"] }}
   workspace:
     clean: all
-  variables:
-  - group : Pipeline
-  - group : Build
-  - group : Test.Integration
   condition: |
     or
     (
@@ -19,8 +19,8 @@ jobs:
   steps:    
   # Building
   - task: DotNetCoreCLI@2
-    displayName: 'Building with Configuration: $(build#configuration.release)'
+    displayName: 'Building with Configuration: Release'
     inputs:
       projects: '**/*.sln'
-      arguments: '--configuration $(build#configuration.release)'
+      arguments: '--configuration Release'
       

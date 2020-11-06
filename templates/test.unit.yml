@@ -1,19 +1,23 @@
 parameters:
+- name: poolImage
+  type: string
+- name: buildConfiguration
+  type: string
 - name: appName
   type: string
-  default: ''
+- name: coverageHistoryFeed
+  type: string
+- name: sonarcloudOrganization
+  type: string
 
 jobs:
 - job: UnitTesting
   displayName: Unit Testing
   pool:
-    vmImage: $(pipeline#vmImage)
+    poolImage: ${{ parameters['poolImage'] }}
   workspace:
     clean: all
   variables:
-  - group : Pipeline
-  - group : Build
-  - group : Test.Unit
   - name  : local#codecoveragehistory.directory
     value : '$(Build.ArtifactStagingDirectory)/history'
   - name  : local#codecoveragehistory.directory
@@ -30,7 +34,7 @@ jobs:
       command: download
       downloadDirectory: $(local#codecoveragehistory.directory)
       feedsToUse: internal
-      vstsFeed: $(test.unit#coverage.history.feed)
+      vstsFeed: ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: '0.*'
 
@@ -44,7 +48,7 @@ jobs:
       )
     inputs:
       SonarCloud: SonarCloud
-      organization: $(test.unit#sonarcloud.organization)
+      organization: ${{ parameters['sonarcloudOrganization'] }}
       projectKey: ${{ lower(parameters['appName']) }}
       projectName: ${{ lower(parameters['appName']) }}
       extraProperties: |
@@ -53,18 +57,18 @@ jobs:
 
   # Building
   - task: DotNetCoreCLI@2
-    displayName: 'Building with Configuration: $(build#configuration.release)'
+    displayName: 'Building with Configuration: ${{ parameters['buildConfiguration'] }}'
     inputs:
       projects: '**/*.sln'    # The <ProjectGuid> element is not required if you build a solution (sln) containing that project.
                               # for SonarQube
-      arguments: '--configuration $(build#configuration.release)'
+      arguments: '--configuration ${{ parameters['buildConfiguration'] }}'
 
   # Testing
   - task: DotNetCoreCLI@2
     displayName: Running Unit Testings
     inputs:
       command: test
-      arguments: '--no-build --configuration $(build#configuration.release) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration ${{ parameters['buildConfiguration'] }} /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
       publishTestResults: true
       projects: '**/*.[Uu]nit[Tt]ests/*.csproj'
 
@@ -91,7 +95,7 @@ jobs:
       command: publish
       publishDirectory: $(local#codecoveragehistory.directory)
       feedsToUsePublish: internal
-      vstsFeedPublish: $(test.unit#coverage.history.feed)
+      vstsFeedPublish: ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackagePublish: $(local#codecoveragehistory.directory)
       versionOption: patch
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
