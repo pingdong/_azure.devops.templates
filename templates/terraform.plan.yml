@@ -20,42 +20,42 @@ jobs:
 - job: Planning
   displayName: Planning
   pool:
-    poolImage: ${{ parameters["poolImage"] }}
+    poolImage: ${{ parameters['poolImage'] }}
   workspace:
     clean: all
   steps:
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-    displayName: 'Terraform: Install ${{ parameters["terraformVersion"] }}'
+    displayName: 'Terraform: Install ${{ parameters['terraformVersion'] }}'
     inputs:
-      terraformVersion: ${{ parameters["terraformVersion"] }}
+      terraformVersion: ${{ parameters['terraformVersion'] }}
 
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
     displayName: 'Terraform: validate'
     inputs:
       command: validate
-      workingDirectory: ${{ parameters["workingDirectory"] }}
+      workingDirectory: ${{ parameters['workingDirectory'] }}
 
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
     displayName: 'Terraform: init'
     inputs:
       command: init
-      workingDirectory: ${{ parameters["workingDirectory"] }}
-      backendServiceArm: ${{ parameters["azureSubscription"] }}
-      backendAzureRmResourceGroupName: ${{ parameters["stateResourceGroup }}
-      backendAzureRmStorageAccountName: ${{ parameters["stateStorageAccount }}
-      backendAzureRmContainerName: ${{ parameters["stateStorageAccountContainer"] }}
-      backendAzureRmKey: ${{ parameters["stateStorageAccountKey"] }}
+      workingDirectory: ${{ parameters['workingDirectory'] }}
+      backendServiceArm: ${{ parameters['azureSubscription'] }}
+      backendAzureRmResourceGroupName: ${{ parameters['stateResourceGroup }}
+      backendAzureRmStorageAccountName: ${{ parameters['stateStorageAccount }}
+      backendAzureRmContainerName: ${{ parameters['stateStorageAccountContainer'] }}
+      backendAzureRmKey: ${{ parameters['stateStorageAccountKey'] }}
   
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
     displayName: 'Terraform: Plan'
     inputs:
       command: plan
-      workingDirectory: ${{ parameters["workingDirectory"] }}
-      environmentServiceNameAzureRM: ${{ parameters["azureSubscription"] }}
+      workingDirectory: ${{ parameters['workingDirectory'] }}
+      environmentServiceNameAzureRM: ${{ parameters['azureSubscription'] }}
 
   - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
     displayName: 'Terraform: '
     inputs:
       command: apply
-      workingDirectory: ${{ parameters["workingDirectory"] }}
-      environmentServiceNameAzureRM: ${{ parameters["azureSubscription"] }}
+      workingDirectory: ${{ parameters['workingDirectory'] }}
+      environmentServiceNameAzureRM: ${{ parameters['azureSubscription'] }}

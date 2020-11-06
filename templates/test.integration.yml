@@ -6,7 +6,7 @@ jobs:
 - job: IntegrationTesting
   displayName: Integration Testing
   pool:
-    poolImage: ${{ parameters["poolImage"] }}
+    poolImage: ${{ parameters['poolImage'] }}
   workspace:
     clean: all
   condition: |
