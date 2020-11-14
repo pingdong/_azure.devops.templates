@@ -1,0 +1,35 @@
+parameters:
+- name: poolImage
+  type: string
+# - name: templateDirectory
+#   type: string
+- name: workingDirectory
+  type: string
+
+jobs:
+- job: TerraformValidating
+  displayName: Terraform Validating
+  pool:
+    poolImage: ${{ parameters['poolImage'] }}
+  workspace:
+    clean: all
+  steps:
+  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+    displayName: 'Download latest'
+
+  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+    displayName: 'Validate'
+    inputs:
+      workingDirectory: ${{ parameters.workingDirectory}}
+      allowTelemetryCollection: false
+
+  # - template: $(parameters.templateDirectory)/terraform.install.yml
+  #   parameters:
+  #     terraformVersion: $(parameters.terraformVersion)      
+
+  # - bash: |
+  #     $TERRAFORM_BINARY init \
+  #       -backend=false
+  #     $TERRAFORM_BINARY validate
+  #   displayName: Validating
+  #   workingDirectory: "$(parameters.workingDirectory)"

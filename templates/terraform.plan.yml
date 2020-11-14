@@ -1,11 +1,7 @@
 parameters:
 - name: poolImage
   type: string
-- name: workingDirectory
-  type: string
 - name: azureSubscription
-  type: string
-- name: terraformVersion
   type: string
 - name: stateResourceGroup
   type: string
@@ -15,47 +11,129 @@ parameters:
   type: string
 - name: stateStorageAccountKey
   type: string
+- name: workingDirectory
+  type: string
+- name: variablesFile
+  type: string
+  default: ''
+- name: arguments
+  type: string
+  default: ''
 
 jobs:
-- job: Planning
-  displayName: Planning
+- job: TerraformPlanning
+  displayName: Terraform Planning
   pool:
     poolImage: ${{ parameters['poolImage'] }}
   workspace:
     clean: all
   steps:
-  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-installer-task.TerraformInstaller@0
-    displayName: 'Terraform: Install ${{ parameters['terraformVersion'] }}'
-    inputs:
-      terraformVersion: ${{ parameters['terraformVersion'] }}
+  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+    displayName: 'Download latest'
 
-  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
-    displayName: 'Terraform: validate'
-    inputs:
-      command: validate
-      workingDirectory: ${{ parameters['workingDirectory'] }}
-
-  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
-    displayName: 'Terraform: init'
+  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+    displayName: 'terraform init'
     inputs:
       command: init
-      workingDirectory: ${{ parameters['workingDirectory'] }}
+      workingDirectory: ${{ parameters.workingDirectory}}
+      backendType: azurerm
       backendServiceArm: ${{ parameters['azureSubscription'] }}
-      backendAzureRmResourceGroupName: ${{ parameters['stateResourceGroup }}
-      backendAzureRmStorageAccountName: ${{ parameters['stateStorageAccount }}
-      backendAzureRmContainerName: ${{ parameters['stateStorageAccountContainer'] }}
-      backendAzureRmKey: ${{ parameters['stateStorageAccountKey'] }}
-  
-  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
-    displayName: 'Terraform: Plan'
+      ensureBackend: true
+      backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
+      backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
+      backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
+      backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+
+  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+    displayName: Planning
     inputs:
       command: plan
-      workingDirectory: ${{ parameters['workingDirectory'] }}
-      environmentServiceNameAzureRM: ${{ parameters['azureSubscription'] }}
+      workingDirectory: ${{ parameters.workingDirectory}}
+      environmentServiceName: ${{ parameters['azureSubscription'] }}
+      secureFilePath: ${{ parameters.variablesFile }}
+      commandOptions: ${{ parameters.arguments }}
 
-  - task: ms-devlabs.custom-terraform-tasks.custom-terraform-release-task.TerraformTaskV1@0
-    displayName: 'Terraform: '
-    inputs:
-      command: apply
-      workingDirectory: ${{ parameters['workingDirectory'] }}
-      environmentServiceNameAzureRM: ${{ parameters['azureSubscription'] }}
+
+# - name: templateDirectory
+#   type: string
+# - name: terraformVersion
+#   type: string
+# - name: workspace
+#   type: string
+#   default: ""
+
+  # - template: ${{ parameters.templateDirectory }}/terraform/terraform.install.yml
+  #   parameters:
+  #     terraformVersion: ${{ parameters.terraformVersion }}
+  
+  # - bash: |
+  #     $TERRAFORM_BINARY init \
+  #       -input=false \
+  #       -backend-config="resource_group_name=${{ parameters.stateResourceGroup }}" \
+  #       -backend-config="storage_account_name=${{ parameters.stateStorageAccount }}" \
+  #       -backend-config="container_name=${{ parameters.stateStorageAccountContainer }}" \
+  #       -backend-config="access_key=${{ parameters.stateStorageAccountKey }}"
+  #   displayName: Initialize Terraform
+  #   workingDirectory: ${{ parameters.workingDirectory }}
+  #   env:
+  #     TF_IN_AUTOMATION: "true"
+
+  # - bash: |
+  #     TF_WORKSPACES=$($TERRAFORM_BINARY workspace list)
+  #     if [[ $TF_WORKSPACES =~ ${{ parameters.workspace }} ]]
+  #     then
+  #       echo "Switching to workspace ${{ parameters.workspace }}"
+  #       $TERRAFORM_BINARY workspace select ${{ parameters.workspace }}
+  #     else
+  #       echo "Workspace does not exist, creating"
+  #       $TERRAFORM_BINARY workspace new ${{ parameters.workspace }}
+  #     fi
+  #   displayName: Select workspace ${{ parameters.workspace }}
+  #   workingDirectory: ${{ parameters.workingDirectory }}
+
+  # - bash: |
+  #     $TERRAFORM_BINARY plan \
+  #       -var-file=${{ parameters.variablesFile }}
+  #       -out=${{ parameters.workspace }}.tfplan \
+  #       -input=false \
+  #       -detailed-exitcode \
+  #       -no-color | tee plan.txt
+  #     # Check if plan has changes
+  #     case ${PIPESTATUS[0]} in
+  #       0)
+  #         echo "##vso[task.logissue type=warning]Environment \"${{ parameters.workspace }}\": Plan has no changes"
+  #         exit 0
+  #         ;;
+  #       1)
+  #         echo "An error occurred" >&2
+  #         exit 1
+  #         ;;
+  #       2)
+  #         # Terraform plan had changes
+  #         echo "##vso[task.logissue type=warning]Environment \"${{ parameters.workspace }}\": $(grep "Plan:" plan.txt) Check logs for more information."
+  #         exit 0
+  #     esac
+  #   displayName: Create Terraform plan
+  #   workingDirectory: "${{ parameters.workingDirectory }}"
+  #   env:
+  #     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+  #     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+  #     ARM_TENANT_ID: $(ARM_TENANT_ID)
+  #     ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+  #     TF_VAR_service_principal_client_id: $(ARM_CLIENT_ID)
+  #     TF_VAR_service_principal_client_secret: $(ARM_CLIENT_SECRET)
+  #     TF_VAR_tenant_id: $(ARM_TENANT_ID)
+  #     ${{ each var in parameters.tf_vars }}:
+  #       TF_VAR_${{ var.key }}: ${{ var.value }}
+
+  #   - task: ArchiveFiles@2
+  #     displayName: Compress Terraform directory
+  #     inputs:
+  #       rootFolderOrFile: "$(Build.SourcesDirectory)/terraform"
+  #       archiveFile: "$(Build.ArtifactStagingDirectory)/terraform.zip"
+
+  #   - publish: "$(Build.ArtifactStagingDirectory)/terraform.zip"
+  #     displayName: Publish Terraform artifact
+  #     artifact: terraform-plan-${{ parameters.workspace }}
+
+
