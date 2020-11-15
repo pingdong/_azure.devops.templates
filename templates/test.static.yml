@@ -6,7 +6,7 @@ jobs:
 - job: StaticTesting
   displayName: Static Testing
   pool:
-    vmImage: $(parameters.vmImage)
+    vmImage: ${{ parameters['vmImage'] }}
   workspace:
     clean: all
   steps:
