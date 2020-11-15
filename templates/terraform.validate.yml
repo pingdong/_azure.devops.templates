@@ -9,7 +9,7 @@ steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Validate'
   inputs:
-    workingDirectory: $(parameters.workingDirectory)
+    workingDirectory: ${{ parameters.workingDirectory }}
 
 # - template: $(parameters.templateDirectory)/terraform.install.yml
 #   parameters:
