@@ -36,7 +36,7 @@ jobs:
       command: download
       downloadDirectory: $(local#codecoveragehistory.directory)
       feedsToUse: internal
-      vstsFeed: $(parameters.coverageHistoryFeed) # ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeed: ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
