@@ -29,10 +29,10 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters.azureSubscription }}
-    backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
-    backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
-    backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
-    backendAzureRmKey: $(parameters.stateStorageAccountKey)
+    backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
+    backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
+    backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
+    backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
 
 - bash: echo $(parameters.arguments)
 
@@ -43,7 +43,7 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     # secureFilePath: ${{ parameters.variablesFile }}
-    commandOptions: $(parameters.arguments)
+    commandOptions: ${{ parameters.arguments }}
 
 
 # - name: templateDirectory
