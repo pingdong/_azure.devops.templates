@@ -21,11 +21,10 @@ jobs:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
   - name  : local#app.name
-    value : $[ lower(parameters['appName']) ]
+    value : ${{ lower(parameters['appName']) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
-    value : $[ lower(parameters['appName']) ].$(Build.SourceBranchName)
-            #${{ lower(parameters['appName']) }}.$(Build.SourceBranchName)
+    value : ${{ lower(parameters['appName']) }}.$(Build.SourceBranchName)
             #lower( parameters['appName'].variables['Build.SourceBranchName'] )
   - name  : disable.coverage.autogenerate
     value : true
