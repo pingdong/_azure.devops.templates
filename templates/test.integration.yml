@@ -1,12 +1,12 @@
 parameters:
-- name: poolImage
+- name: vmImage
   type: string
 
 jobs: 
 - job: IntegrationTesting
   displayName: Integration Testing
   pool:
-    poolImage: $(parameters.vmImage)
+    vmImage: $(parameters.vmImage)
   workspace:
     clean: all
   condition: |

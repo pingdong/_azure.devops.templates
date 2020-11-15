@@ -1,5 +1,5 @@
 parameters:
-- name: poolImage
+- name: vmImage
   type: string
 - name: buildConfiguration
   type: string
@@ -14,7 +14,7 @@ jobs:
 - job: UnitTesting
   displayName: Unit Testing
   pool:
-    poolImage: $(parameters.vmImage)
+    vmImage: $(parameters.vmImage)
   workspace:
     clean: all
   variables:

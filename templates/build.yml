@@ -1,5 +1,5 @@
 parameters:
-- name: poolImage
+- name: vmImage
   type: string
 - name: appName
   type: string
@@ -10,7 +10,7 @@ jobs:
 - job: Build
   displayName: Building
   pool:
-    poolImage: $(parameters.vmImage)
+    vmImage: $(parameters.vmImage)
   workspace:
     clean: all
   steps:

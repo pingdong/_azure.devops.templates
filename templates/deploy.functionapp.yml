@@ -25,7 +25,7 @@ steps:
     inputs:
       azureSubscription: ${{ parameters['azureSubscription'] }}
       appType: functionApp
-      appName: ${{ parameters['funcName'] }}
+      appName: $(parameters.funcName)
       package: '$(Pipeline.Workspace)/drop/*.zip'
 
 - ${{ if eq(parameters['enableSlot'], true) }}:
