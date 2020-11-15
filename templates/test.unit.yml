@@ -14,7 +14,7 @@ jobs:
 - job: UnitTesting
   displayName: Unit Testing
   pool:
-    poolImage: $(pipeline#vmImage)
+    poolImage: $(parameters.vmImage)
   workspace:
     clean: all
   variables:

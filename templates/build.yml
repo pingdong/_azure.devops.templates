@@ -10,7 +10,7 @@ jobs:
 - job: Build
   displayName: Building
   pool:
-    poolImage: $(pipeline#vmImage)
+    poolImage: $(parameters.vmImage)
   workspace:
     clean: all
   steps:

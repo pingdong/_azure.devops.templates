@@ -24,7 +24,7 @@ jobs:
 - job: TerraformPlanning
   displayName: Infrastructure Planning
   pool:
-    poolImage: $(pipeline#vmImage)
+    poolImage: $(parameters.vmImage)
   workspace:
     clean: all
   steps:

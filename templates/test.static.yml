@@ -6,7 +6,7 @@ jobs:
 - job: StaticTesting
   displayName: Static Testing
   pool:
-    poolImage: $(pipeline#vmImage)
+    poolImage: $(parameters.vmImage)
   workspace:
     clean: all
   steps:

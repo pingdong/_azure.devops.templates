@@ -10,7 +10,7 @@ jobs:
 - job: TerraformValidating
   displayName: Validating Terraform
   pool:
-    poolImage: $(pipeline#vmImage)
+    poolImage: $(parameters.vmImage)
   workspace:
     clean: all
   steps:
