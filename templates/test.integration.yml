@@ -6,7 +6,7 @@ jobs:
 - job: IntegrationTesting
   displayName: Integration Testing
   pool:
-    poolImage: ${{ parameters.poolImage }}
+    poolImage: $(pipeline#vmImage)
   workspace:
     clean: all
   condition: |
