@@ -1,6 +1,4 @@
 parameters:
-- name: vmImage
-  type: string
 - name: azureSubscription
   type: string
 - name: stateResourceGroup
@@ -20,38 +18,31 @@ parameters:
   type: string
   default: ''
 
-jobs:
-- job: TerraformPlanning
-  displayName: Infrastructure Planning
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  workspace:
-    clean: all
-  steps:
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-    displayName: 'Download latest'
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: 'Download latest'
 
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: 'terraform init'
-    inputs:
-      command: init
-      workingDirectory: $(parameters.workingDirectory)
-      backendType: azurerm
-      backendServiceArm: ${{ parameters['azureSubscription'] }}
-      ensureBackend: true
-      backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
-      backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
-      backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
-      backendAzureRmKey: $(parameters.stateStorageAccountKey)
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'terraform init'
+  inputs:
+    command: init
+    workingDirectory: $(parameters.workingDirectory)
+    backendType: azurerm
+    backendServiceArm: ${{ parameters['azureSubscription'] }}
+    ensureBackend: true
+    backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
+    backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
+    backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
+    backendAzureRmKey: $(parameters.stateStorageAccountKey)
 
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: Planning
-    inputs:
-      command: plan
-      workingDirectory: $(parameters.workingDirectory)
-      environmentServiceName: ${{ parameters['azureSubscription'] }}
-      secureFilePath: $(parameters.variablesFile)
-      commandOptions: $(parameters.arguments)
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Planning
+  inputs:
+    command: plan
+    workingDirectory: $(parameters.workingDirectory)
+    environmentServiceName: ${{ parameters['azureSubscription'] }}
+    secureFilePath: $(parameters.variablesFile)
+    commandOptions: $(parameters.arguments)
 
 
 # - name: templateDirectory
