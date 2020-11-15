@@ -38,7 +38,7 @@ jobs:
       command: download
       downloadDirectory: $(local#codecoveragehistory.directory)
       feedsToUse: internal
-      vstsFeed: $[ parameters['coverageHistoryFeed'] ] # ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeed: ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
@@ -52,7 +52,7 @@ jobs:
       )
     inputs:
       SonarCloud: SonarCloud
-      organization: $[ parameters['sonarcloudOrganization'] ]
+      organization: ${{ parameters['sonarcloudOrganization'] }}
       projectKey: $(local#app.name)
       projectName: $(local#app.name)
       extraProperties: |
@@ -99,7 +99,7 @@ jobs:
       command: publish
       publishDirectory: $(local#codecoveragehistory.directory)
       feedsToUsePublish: internal
-      vstsFeedPublish: $[ parameters['coverageHistoryFeed'] ]
+      vstsFeedPublish: ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackagePublish: $(local#codecoveragehistory.directory)
       versionOption: patch
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
