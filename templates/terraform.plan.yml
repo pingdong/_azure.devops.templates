@@ -34,17 +34,14 @@ steps:
     backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
     backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
 
-- bash: echo $(parameters.arguments)
-
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Planning
   inputs:
     command: plan
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
-    # secureFilePath: ${{ parameters.variablesFile }}
+    secureFilePath: ${{ parameters.variablesFile }}
     commandOptions: ${{ parameters.arguments }}
-
 
 # - name: templateDirectory
 #   type: string
