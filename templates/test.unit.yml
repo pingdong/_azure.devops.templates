@@ -14,7 +14,7 @@ jobs:
 - job: UnitTesting
   displayName: Unit Testing
   pool:
-    poolImage: ${{ parameters['poolImage'] }}
+    poolImage: $(parameters.poolImage)
   workspace:
     clean: all
   variables:
@@ -22,7 +22,7 @@ jobs:
     value : $(Build.ArtifactStagingDirectory)/history
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
-    value : ${{ lower(parameters['appName']) }}.$(Build.SourceBranchName)
+    value : lower( parameters['appName'].variables['Build.SourceBranchName'] ) #${{ lower(parameters['appName']) }}.$(Build.SourceBranchName)
   - name  : disable.coverage.autogenerate
     value : true
   steps:
@@ -35,7 +35,7 @@ jobs:
       command: download
       downloadDirectory: $(local#codecoveragehistory.directory)
       feedsToUse: internal
-      vstsFeed: ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeed: $(parameters.coverageHistoryFeed) # ${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
@@ -49,27 +49,27 @@ jobs:
       )
     inputs:
       SonarCloud: SonarCloud
-      organization: ${{ parameters['sonarcloudOrganization'] }}
-      projectKey: ${{ lower(parameters['appName']) }}
-      projectName: ${{ lower(parameters['appName']) }}
+      organization: $(parameters.sonarcloudOrganization) # $[ parameters['sonarcloudOrganization'] ]
+      projectKey: lower(parameters.appName)
+      projectName: lower(parameters.appName)
       extraProperties: |
         sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
 
   # Building
   - task: DotNetCoreCLI@2
-    displayName: 'Building with Configuration: ${{ parameters['buildConfiguration'] }}'
+    displayName: 'Building with Configuration: $(parameters.buildConfiguration)'
     inputs:
       projects: '**/*.sln'    # The <ProjectGuid> element is not required if you build a solution (sln) containing that project.
                               # for SonarQube
-      arguments: '--configuration ${{ parameters['buildConfiguration'] }}'
+      arguments: '--configuration $(parameters.buildConfiguration)'
 
   # Testing
   - task: DotNetCoreCLI@2
     displayName: Running Unit Testings
     inputs:
       command: test
-      arguments: '--no-build --configuration ${{ parameters['buildConfiguration'] }} /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+      arguments: '--no-build --configuration $(parameters.buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
       publishTestResults: true
       projects: '**/*.[Uu]nit[Tt]ests/*.csproj'
 
@@ -96,7 +96,7 @@ jobs:
       command: publish
       publishDirectory: $(local#codecoveragehistory.directory)
       feedsToUsePublish: internal
-      vstsFeedPublish: ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeedPublish: $(parameters.coverageHistoryFeed) #${{ parameters['coverageHistoryFeed'] }}
       vstsFeedPackagePublish: $(local#codecoveragehistory.directory)
       versionOption: patch
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
