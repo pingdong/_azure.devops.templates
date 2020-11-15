@@ -10,7 +10,7 @@ jobs:
 - job: Build
   displayName: Building
   pool:
-    poolImage: $(parameters.poolImage)
+    poolImage: ${{ parameters.poolImage }}
   workspace:
     clean: all
   steps:

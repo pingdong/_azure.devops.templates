@@ -6,7 +6,7 @@ jobs:
 - job: StaticTesting
   displayName: Static Testing
   pool:
-    poolImage: ${{ parameters['poolImage'] }}
+    poolImage: ${{ parameters.poolImage }}
   workspace:
     clean: all
   steps:

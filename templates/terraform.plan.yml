@@ -24,7 +24,7 @@ jobs:
 - job: TerraformPlanning
   displayName: Infrastructure Planning
   pool:
-    poolImage: $(parameters.poolImage)
+    poolImage: ${{ parameters.poolImage }}
   workspace:
     clean: all
   steps:
