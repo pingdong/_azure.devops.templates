@@ -1,7 +1,7 @@
 parameters:
 - name: vmImage
   type: string
-- name: appName
+- name: projectName
   type: string
 - name: buildConfiguration
   type: string
@@ -26,7 +26,7 @@ jobs:
     inputs:
       command: publish
       publishWebProjects: false
-      projects: '**/${{ parameters.appName }}.csproj'
+      projects: '**/${{ parameters.projectName }}.csproj'
       arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
 
   # - job: BuildDBMigrationScript
