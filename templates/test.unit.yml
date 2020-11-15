@@ -21,10 +21,10 @@ jobs:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
   - name  : local#app.name
-    value : ${{ lower(parameters['appName']) }}
+    value : ${{ lower(parameters.appName) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
-    value : ${{ lower(parameters['appName']) }}.$(Build.SourceBranchName)
+    value : ${{ lower(parameters.appName) }}.$(Build.SourceBranchName)
   - name  : disable.coverage.autogenerate
     value : true
   steps:
@@ -37,7 +37,7 @@ jobs:
       command: download
       downloadDirectory: $(local#codecoveragehistory.directory)
       feedsToUse: internal
-      vstsFeed: ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeed: ${{ parameters.coverageHistoryFeed }}
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
@@ -51,7 +51,7 @@ jobs:
       )
     inputs:
       SonarCloud: SonarCloud
-      organization: ${{ parameters['sonarcloudOrganization'] }}
+      organization: ${{ parameters.sonarcloudOrganization }}
       projectKey: $(local#app.name)
       projectName: $(local#app.name)
       extraProperties: |
@@ -98,7 +98,7 @@ jobs:
       command: publish
       publishDirectory: $(local#codecoveragehistory.directory)
       feedsToUsePublish: internal
-      vstsFeedPublish: ${{ parameters['coverageHistoryFeed'] }}
+      vstsFeedPublish: ${{ parameters.coverageHistoryFeed }}
       vstsFeedPackagePublish: $(local#codecoveragehistory.directory)
       versionOption: patch
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
