@@ -11,30 +11,37 @@ parameters:
   type: string
 - name: workingDirectory
   type: string
+- name: variablesFile
+  type: string
+  default: ''
+- name: arguments
+  type: string
+  default: ''
 
 steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
   displayName: 'Download latest'
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'terraform init'
+  displayName: 'Initializing'
   inputs:
     command: init
-    workingDirectory: $(parameters.workingDirectory)
+    workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
-    backendServiceArm: ${{ parameters['azureSubscription'] }}
-    backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
-    backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
-    backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
-    backendAzureRmKey: $(parameters.stateStorageAccountKey)
+    backendServiceArm: ${{ parameters.azureSubscription }}
+    backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
+    backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
+    backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
+    backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'terraform apply'
+  displayName: 'Applying'
   inputs:
     command: apply
-    workingDirectory: $(parameters.workingDirectory)
-    environmentServiceName: ${{ parameters['azureSubscription'] }}
-
+    workingDirectory: ${{ parameters.workingDirectory }}
+    environmentServiceName: ${{ parameters.azureSubscription }}
+    secureFilePath: ${{ parameters.variablesFile }}
+    commandOptions: ${{ parameters.arguments }}
 
 # jobs:
 # - deployment: apply_terraform
