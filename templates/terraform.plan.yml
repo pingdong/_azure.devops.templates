@@ -26,7 +26,7 @@ steps:
   displayName: 'terraform init'
   inputs:
     command: init
-    workingDirectory: $(parameters.workingDirectory)
+    workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters['azureSubscription'] }}
     ensureBackend: true
@@ -39,7 +39,7 @@ steps:
   displayName: Planning
   inputs:
     command: plan
-    workingDirectory: $(parameters.workingDirectory)
+    workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters['azureSubscription'] }}
     secureFilePath: $(parameters.variablesFile)
     commandOptions: $(parameters.arguments)
