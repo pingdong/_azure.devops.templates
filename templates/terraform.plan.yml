@@ -23,7 +23,7 @@ steps:
   displayName: 'Download latest'
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'terraform init'
+  displayName: Initializing
   inputs:
     command: init
     workingDirectory: ${{ parameters.workingDirectory }}
