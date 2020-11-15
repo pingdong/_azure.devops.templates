@@ -11,12 +11,12 @@ steps:
   inputs:
     command: init
     commandOptions: '-backend=false'
-    workingDirectory: ${{ parameters.workingDirectory }}
+    workingDirectory: $(parameters.workingDirectory)
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Validating'
   inputs:
-    workingDirectory: ${{ parameters.workingDirectory }}
+    workingDirectory: $(parameters.workingDirectory)
 
 # - template: $(parameters.templateDirectory)/terraform.install.yml
 #   parameters:
