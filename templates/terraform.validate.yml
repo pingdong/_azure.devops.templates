@@ -8,7 +8,7 @@ parameters:
 
 jobs:
 - job: TerraformValidating
-  displayName: Terraform Validating
+  displayName: Validating Terraform
   pool:
     poolImage: $(pipeline#vmImage)
   workspace:
