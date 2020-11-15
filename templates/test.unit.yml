@@ -3,7 +3,7 @@ parameters:
   type: string
 - name: buildConfiguration
   type: string
-- name: appName
+- name: projectName
   type: string
 - name: coverageHistoryFeed
   type: string
@@ -20,11 +20,11 @@ jobs:
   variables:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
-  - name  : local#app.name
-    value : ${{ lower(parameters.appName) }}
+  - name  : local#project.name
+    value : ${{ lower(parameters.projectName) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
-    value : ${{ lower(parameters.appName) }}.$(Build.SourceBranchName)
+    value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
   - name  : disable.coverage.autogenerate
     value : true
   steps:
@@ -52,8 +52,8 @@ jobs:
     inputs:
       SonarCloud: SonarCloud
       organization: ${{ parameters.sonarcloudOrganization }}
-      projectKey: $(local#app.name)
-      projectName: $(local#app.name)
+      projectKey: $(local#project.name)
+      projectName: $(local#project.name)
       extraProperties: |
         sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
