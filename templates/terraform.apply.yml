@@ -1,8 +1,6 @@
 parameters:
 - name: azureSubscription
   type: string
-- name: terraformVersion
-  type: string
 - name: stateResourceGroup
   type: string
 - name: stateStorageAccount
