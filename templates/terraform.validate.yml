@@ -11,6 +11,7 @@ steps:
   inputs:
     command: init
     commandOptions: '-backend=false'
+    workingDirectory: ${{ parameters.workingDirectory }}
 
 - bash: echo ${{ parameters.workingDirectory }}
 
