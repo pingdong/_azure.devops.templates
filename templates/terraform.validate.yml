@@ -1,34 +1,23 @@
 parameters:
-- name: vmImage
-  type: string
-# - name: templateDirectory
-#   type: string
 - name: workingDirectory
   type: string
 
-jobs:
-- job: TerraformValidating
-  displayName: Validating Terraform
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  workspace:
-    clean: all
-  steps:
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-    displayName: 'Download latest'
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: 'Download latest'
 
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: 'Validate'
-    inputs:
-      workingDirectory: $(parameters.workingDirectory)
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'Validate'
+  inputs:
+    workingDirectory: $(parameters.workingDirectory)
 
-  # - template: $(parameters.templateDirectory)/terraform.install.yml
-  #   parameters:
-  #     terraformVersion: $(parameters.terraformVersion)      
+# - template: $(parameters.templateDirectory)/terraform.install.yml
+#   parameters:
+#     terraformVersion: $(parameters.terraformVersion)      
 
-  # - bash: |
-  #     $TERRAFORM_BINARY init \
-  #       -backend=false
-  #     $TERRAFORM_BINARY validate
-  #   displayName: Validating
-  #   workingDirectory: "$(parameters.workingDirectory)"
+# - bash: |
+#     $TERRAFORM_BINARY init \
+#       -backend=false
+#     $TERRAFORM_BINARY validate
+#   displayName: Validating
+#   workingDirectory: "$(parameters.workingDirectory)"
