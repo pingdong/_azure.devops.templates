@@ -1,8 +1,4 @@
 parameters:
-- name: environment
-  type: string
-- name: poolImage
-  type: string
 - name: azureSubscription
   type: string
 - name: terraformVersion
@@ -18,36 +14,28 @@ parameters:
 - name: workingDirectory
   type: string
 
-jobs:
-- job: TerraformPlanning
-  environment: ${{ parameters['environment'] }}
-  displayName: Terraform Planning
-  pool:
-    poolImage: ${{ parameters['poolImage'] }}
-  workspace:
-    clean: all
-  steps:
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-    displayName: 'Download latest'
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: 'Download latest'
 
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: 'terraform init'
-    inputs:
-      command: init
-      workingDirectory: ${{ parameters.workingDirectory }}
-      backendType: azurerm
-      backendServiceArm: ${{ parameters['azureSubscription'] }}
-      backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
-      backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
-      backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
-      backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'terraform init'
+  inputs:
+    command: init
+    workingDirectory: ${{ parameters.workingDirectory }}
+    backendType: azurerm
+    backendServiceArm: ${{ parameters['azureSubscription'] }}
+    backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
+    backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
+    backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
+    backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
 
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: 'terraform apply'
-    inputs:
-      command: apply
-      workingDirectory: ${{ parameters.workingDirectory}}
-      environmentServiceName: ${{ parameters['azureSubscription'] }}
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'terraform apply'
+  inputs:
+    command: apply
+    workingDirectory: ${{ parameters.workingDirectory}}
+    environmentServiceName: ${{ parameters['azureSubscription'] }}
 
 
 # jobs:
