@@ -24,7 +24,7 @@ jobs:
 - job: TerraformPlanning
   displayName: Terraform Planning
   pool:
-    poolImage: ${{ parameters['poolImage'] }}
+    poolImage: $(parameters.poolImage)
   workspace:
     clean: all
   steps:
@@ -35,23 +35,23 @@ jobs:
     displayName: 'terraform init'
     inputs:
       command: init
-      workingDirectory: ${{ parameters.workingDirectory}}
+      workingDirectory: $(parameters.workingDirectory)
       backendType: azurerm
       backendServiceArm: ${{ parameters['azureSubscription'] }}
       ensureBackend: true
-      backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
-      backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
-      backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
-      backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+      backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
+      backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
+      backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
+      backendAzureRmKey: $(parameters.stateStorageAccountKey)
 
   - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
     displayName: Planning
     inputs:
       command: plan
-      workingDirectory: ${{ parameters.workingDirectory}}
+      workingDirectory: $(parameters.workingDirectory)
       environmentServiceName: ${{ parameters['azureSubscription'] }}
-      secureFilePath: ${{ parameters.variablesFile }}
-      commandOptions: ${{ parameters.arguments }}
+      secureFilePath: $(parameters.variablesFile)
+      commandOptions: $(parameters.arguments)
 
 
 # - name: templateDirectory
