@@ -6,7 +6,10 @@ steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
   displayName: 'Download latest'
 
-- bash: echo ls ${{ parameters.workingDirectory }}
+- bash: |
+    echo dir ${{ parameters.workingDirectory }} \
+    echo dir $(Build.SourcesDirectory) \
+    echo dir $(Agent.BuildDirectory) 
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Initailizing'
