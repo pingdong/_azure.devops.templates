@@ -10,7 +10,7 @@ jobs:
 - job: Build
   displayName: Building
   pool:
-    vmImage: $(parameters.vmImage)
+    vmImage: ${{ parameters.vmImage }}
   workspace:
     clean: all
   steps:
