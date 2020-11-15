@@ -28,19 +28,21 @@ steps:
     command: init
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
-    backendServiceArm: ${{ parameters['azureSubscription'] }}
+    backendServiceArm: ${{ parameters.azureSubscription }}
     backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
     backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
     backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
     backendAzureRmKey: $(parameters.stateStorageAccountKey)
+
+- bash: echo $(parameters.arguments)
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Planning
   inputs:
     command: plan
     workingDirectory: ${{ parameters.workingDirectory }}
-    environmentServiceName: ${{ parameters['azureSubscription'] }}
-    secureFilePath: $(parameters.variablesFile)
+    environmentServiceName: ${{ parameters.azureSubscription }}
+    # secureFilePath: ${{ parameters.variablesFile }}
     commandOptions: $(parameters.arguments)
 
 
