@@ -12,7 +12,7 @@ steps:
     command: init
     commandOptions: '-backend=false'
 
-- base: echo ${{ parameters.workingDirectory }}
+- bash: echo ${{ parameters.workingDirectory }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Validating'
