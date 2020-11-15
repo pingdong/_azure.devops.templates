@@ -22,19 +22,19 @@ steps:
   displayName: 'terraform init'
   inputs:
     command: init
-    workingDirectory: ${{ parameters.workingDirectory }}
+    workingDirectory: $(parameters.workingDirectory)
     backendType: azurerm
     backendServiceArm: ${{ parameters['azureSubscription'] }}
-    backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
-    backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
-    backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
-    backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+    backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
+    backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
+    backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
+    backendAzureRmKey: $(parameters.stateStorageAccountKey)
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'terraform apply'
   inputs:
     command: apply
-    workingDirectory: ${{ parameters.workingDirectory}}
+    workingDirectory: $(parameters.workingDirectory)
     environmentServiceName: ${{ parameters['azureSubscription'] }}
 
 
