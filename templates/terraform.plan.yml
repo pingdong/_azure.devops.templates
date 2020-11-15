@@ -22,7 +22,7 @@ parameters:
 
 jobs:
 - job: TerraformPlanning
-  displayName: Terraform Planning
+  displayName: Infrastructure Planning
   pool:
     poolImage: $(parameters.poolImage)
   workspace:
