@@ -7,7 +7,15 @@ steps:
   displayName: 'Download latest'
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'Validate'
+  displayName: 'Initailizing'
+  inputs:
+    command: init
+    commandOptions: '-backend=false'
+
+- base: echo ${{ parameters.workingDirectory }}
+
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: 'Validating'
   inputs:
     workingDirectory: ${{ parameters.workingDirectory }}
 
