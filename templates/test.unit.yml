@@ -49,7 +49,7 @@ jobs:
       )
     inputs:
       SonarCloud: SonarCloud
-      organization: $(parameters.sonarcloudOrganization) # $[ parameters['sonarcloudOrganization'] ]
+      organization: $[ parameters['sonarcloudOrganization'] ]
       projectKey: lower(parameters.appName)
       projectName: lower(parameters.appName)
       extraProperties: |
