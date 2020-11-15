@@ -29,7 +29,6 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters['azureSubscription'] }}
-    ensureBackend: true
     backendAzureRmResourceGroupName: $(parameters.stateResourceGroup)
     backendAzureRmStorageAccountName: $(parameters.stateStorageAccount)
     backendAzureRmContainerName: $(parameters.stateStorageAccountContainer)
