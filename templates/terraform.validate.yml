@@ -21,7 +21,6 @@ jobs:
     displayName: 'Validate'
     inputs:
       workingDirectory: $(parameters.workingDirectory)
-      allowTelemetryCollection: false
 
   # - template: $(parameters.templateDirectory)/terraform.install.yml
   #   parameters:
