@@ -39,7 +39,7 @@ steps:
   displayName: Applying
   inputs:
     command: apply
-    commandOptions: '-input=false $(Pipeline.Workspace)/terraform/tfplan -auto-approve ${{ parameters.variables }}'
+    commandOptions: '-input=false $(Pipeline.Workspace)/terraform/plan.tfplan -auto-approve ${{ parameters.variables }}'
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     secureFilePath: ${{ parameters.variablesFile }}
