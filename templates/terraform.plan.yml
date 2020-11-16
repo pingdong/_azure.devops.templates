@@ -39,7 +39,7 @@ steps:
   displayName: Planning
   inputs:
     command: plan
-    commandOptions: '-output $(Pipeline.Workspace)/terraform/plan.tfplan -input=false -lock=true ${{ parameters.variables }}'
+    commandOptions: '-out=$(Pipeline.Workspace)/terraform/plan.tfplan -input=false -lock=true ${{ parameters.variables }}'
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     secureFilePath: ${{ parameters.variablesFile }}
