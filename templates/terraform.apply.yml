@@ -26,7 +26,6 @@ steps:
   displayName: Initializing
   inputs:
     command: init
-    commandOptions: '-input=false'
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters.azureSubscription }}
@@ -34,15 +33,23 @@ steps:
     backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
     backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
     backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_INPUT: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying
   inputs:
     command: apply
-    commandOptions: '-input=false $(Pipeline.Workspace)/terraform/plan.tfplan -auto-approve ${{ parameters.variables }}'
+    commandOptions: ${{ parameters.variables }}
+    secureFilePath: ${{ parameters.variablesFile }}
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
-    secureFilePath: ${{ parameters.variablesFile }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_IN_AUTOMATATION: true
+    TF_INPUT: false
+    TF_AUTO_APPROVE: true
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Output
