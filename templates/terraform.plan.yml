@@ -41,7 +41,7 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     secureFilePath: ${{ parameters.variablesFile }}
-    commandOptions: ${{ parameters.arguments }}
+    commandOptions: '${{ parameters.arguments }} -output=plan'
 
 # - name: templateDirectory
 #   type: string

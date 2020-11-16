@@ -43,6 +43,12 @@ steps:
     secureFilePath: ${{ parameters.variablesFile }}
     commandOptions: ${{ parameters.arguments }}
 
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Set Environment Variables
+  inputs:
+    command: output
+    workingDirectory: ${{ parameters.workingDirectory }}
+
 # jobs:
 # - deployment: apply_terraform
 #     displayName: Apply Terraform
