@@ -14,7 +14,7 @@ parameters:
 - name: variablesFile
   type: string
   default: ''
-- name: arguments
+- name: variables
   type: string
   default: ''
 
@@ -26,6 +26,7 @@ steps:
   displayName: Initializing
   inputs:
     command: init
+    commandOptions: '-input=false'
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters.azureSubscription }}
@@ -38,10 +39,10 @@ steps:
   displayName: Planning
   inputs:
     command: plan
+    commandOptions: '-output=tfplan -input=false ${{ parameters.variables }}'
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     secureFilePath: ${{ parameters.variablesFile }}
-    commandOptions: '${{ parameters.arguments }} -output=plan'
 
 # - name: templateDirectory
 #   type: string

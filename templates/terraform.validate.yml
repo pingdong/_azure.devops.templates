@@ -10,7 +10,7 @@ steps:
   displayName: 'Initailizing'
   inputs:
     command: init
-    commandOptions: '-backend=false'
+    commandOptions: '-backend=false -input=false'
     workingDirectory: ${{ parameters.workingDirectory }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0

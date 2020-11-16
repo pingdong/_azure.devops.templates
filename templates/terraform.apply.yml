@@ -14,7 +14,7 @@ parameters:
 - name: variablesFile
   type: string
   default: ''
-- name: arguments
+- name: variables
   type: string
   default: ''
 
@@ -26,6 +26,7 @@ steps:
   displayName: Initializing
   inputs:
     command: init
+    commandOptions: '-input=false'
     workingDirectory: ${{ parameters.workingDirectory }}
     backendType: azurerm
     backendServiceArm: ${{ parameters.azureSubscription }}
@@ -38,10 +39,10 @@ steps:
   displayName: Applying
   inputs:
     command: apply
+    commandOptions: '-input=false tfplan -auto-approve ${{ parameters.variables }}'
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
     secureFilePath: ${{ parameters.variablesFile }}
-    commandOptions: ${{ parameters.arguments }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Set Environment Variables
