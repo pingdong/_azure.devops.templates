@@ -4,10 +4,10 @@ parameters:
 
 steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-  displayName: 'Download latest'
+  displayName: Download Terraform
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'Initailizing'
+  displayName: Initailizing Backend
   inputs:
     command: init
     commandOptions: '-backend=false -input=false'
