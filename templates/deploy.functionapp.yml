@@ -23,29 +23,29 @@ steps:
   - task: AzureWebApp@1
     displayName: Deploying
     inputs:
-      azureSubscription: ${{ parameters['azureSubscription'] }}
+      azureSubscription: ${{ parameters.azureSubscription }}
       appType: functionApp
-      appName: $(parameters.funcName)
+      appName: ${{ parameters.funcName }}
       package: '$(Pipeline.Workspace)/drop/*.zip'
 
 - ${{ if eq(parameters['enableSlot'], true) }}:
   - task: AzureWebApp@1
-    displayName: Deploying to Slot ${{ parameters['slotName'] }}
+    displayName: Deploying to Slot ${{ parameters.slotName }}
     inputs:
-      azureSubscription: ${{ parameters['azureSubscription'] }}
+      azureSubscription: ${{ parameters.azureSubscription }}
       appType: functionApp
-      appName: $(parameters.funcName) # ${{ parameters['funcName'] }}
+      appName: ${{ parameters.funcName }}
       package: '$(Pipeline.Workspace)/drop/*.zip'
       deployToSlotOrASE: true
-      resourceGroupName: $(parameters.resourcegroupName)
-      slotName: $(parameters.slotName)
+      resourceGroupName: ${{ parameters.resourcegroupName }}
+      slotName: ${{ parameters.slotName }}
 
   - task: AzureAppServiceManage@0
-    displayName: Swapping Slot $(deploy#venue.app.slot) with Production
+    displayName: Swapping Slot ${{ parameters.slotName }} with Production
     inputs:
-      azureSubscription: ${{ parameters['azureSubscription'] }}
+      azureSubscription: ${{ parameters.azureSubscription }}
       action: 'Swap Slots'
-      WebAppName: $(parameters.funcName)
-      ResourceGroupName: $(parameters.resourcegroupName)
-      SourceSlot: $(parameters.slotName)
+      WebAppName: ${{ parameters.funcName }}
+      ResourceGroupName: ${{ parameters.resourcegroupName }}
+      SourceSlot: ${{ parameters.slotName }}
       SwapWithProduction: true
