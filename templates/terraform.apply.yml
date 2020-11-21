@@ -1,14 +1,4 @@
 parameters:
-- name: azureSubscription
-  type: string
-- name: stateResourceGroup
-  type: string
-- name: stateStorageAccount
-  type: string
-- name: stateStorageAccountContainer
-  type: string
-- name: stateStorageAccountKey
-  type: string
 - name: workingDirectory
   type: string
 - name: variablesFile
@@ -17,13 +7,29 @@ parameters:
 - name: variables
   type: string
   default: ''
+# Azure Backend
+- name: azureSubscription
+  type: string
+  default: ''
+- name: stateResourceGroup
+  type: string
+  default: ''
+- name: stateStorageAccount
+  type: string
+  default: ''
+- name: stateStorageAccountContainer
+  type: string
+  default: ''
+- name: stateStorageAccountKey
+  type: string
+  default: ''
 
 steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
   displayName: Download Terraform
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: Initializing Backend
+  displayName: Initializing
   inputs:
     command: init
     workingDirectory: ${{ parameters.workingDirectory }}
@@ -36,6 +42,7 @@ steps:
   env:
     TF_CLI_ARGS: -no-color
     TF_INPUT: false
+    TF_BACKEND: ${{ length(parameters.hasBackend) > 0 }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying Infrastructure Changes

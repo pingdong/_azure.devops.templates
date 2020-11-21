@@ -1,6 +1,9 @@
 parameters:
 - name: workingDirectory
   type: string
+- name: variables
+  type: string
+  default: ''
 
 steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
@@ -10,8 +13,12 @@ steps:
   displayName: Initailizing Backend
   inputs:
     command: init
-    commandOptions: '-backend=false -input=false'
+    commandOptions: ${{ parameters.variables }}
     workingDirectory: ${{ parameters.workingDirectory }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_INPUT: false
+    TF_BACKEND: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Validating'
