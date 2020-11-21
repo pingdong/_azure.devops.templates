@@ -1,0 +1,56 @@
+parameters:
+- name: workingDirectory
+  type: string
+- name: variables
+  type: string
+  default: ''
+# Azure Backend
+- name: azureSubscription
+  type: string
+  default: ''
+- name: stateResourceGroup
+  type: string
+  default: ''
+- name: stateStorageAccount
+  type: string
+  default: ''
+- name: stateStorageAccountContainer
+  type: string
+  default: ''
+- name: stateStorageAccountKey
+  type: string
+  default: ''
+
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
+  displayName: Download Terraform
+
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Initailizing
+  inputs:
+    command: init
+    workingDirectory: ${{ parameters.workingDirectory }}
+    backendType: azurerm
+    backendServiceArm: ${{ parameters.azureSubscription }}
+    backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
+    backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
+    backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
+    backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_INPUT: false
+    TF_BACKEND: ${{ length(parameters.hasBackend) > 0 }}
+
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Applying Infrastructure Changes
+  inputs:
+    command: destory
+    commandOptions: ${{ parameters.variables }}
+    secureFilePath: ${{ parameters.variablesFile }}
+    workingDirectory: ${{ parameters.workingDirectory }}
+    environmentServiceName: ${{ parameters.azureSubscription }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_IN_AUTOMATATION: true
+    TF_INPUT: false
+    TF_AUTO_APPROVE: true
