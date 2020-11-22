@@ -1,3 +1,4 @@
+# TODO: Possibility of integrating whole integration testing process into one template 
 parameters:
 - name: vmImage
   type: string
