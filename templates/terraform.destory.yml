@@ -40,9 +40,8 @@ steps:
     backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
     backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
   env:
-    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS: -no-color -backend=${{ ge(length(parameters.azureSubscription), 0) }}
     TF_INPUT: false
-    TF_BACKEND: ${{ ge(length(parameters.azureSubscription), 0) }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying Infrastructure Changes
@@ -53,7 +52,6 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
   env:
-    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS: -no-color -auto-approve
     TF_IN_AUTOMATATION: true
     TF_INPUT: false
-    TF_AUTO_APPROVE: true
