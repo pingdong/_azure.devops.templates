@@ -1,52 +1,43 @@
 parameters:
-- name: vmImage
-  type: string
 - name: projectName
   type: string
 - name: buildConfiguration
   type: string
 
-jobs:
-- job: Build
-  displayName: Building
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  workspace:
-    clean: all
-  steps:
-  - task: DotNetCoreCLI@2
-    displayName: Restoring dependencies
-    inputs:
-      command: restore
-      projects: '**/*.csproj'
+steps:
+- task: DotNetCoreCLI@2
+  displayName: Restoring dependencies
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
 
-  - task: DotNetCoreCLI@2
-    displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
-    condition: succeeded()
-    inputs:
-      command: publish
-      publishWebProjects: false
-      projects: '**/${{ parameters.projectName }}.csproj'
-      arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+- task: DotNetCoreCLI@2
+  displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+  condition: succeeded()
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/${{ parameters.projectName }}.csproj'
+    arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
 
-  # - job: BuildDBMigrationScript
-  #   displayName: Building Database Migration Script
-  #   pool:
-  #     vmImage: $(build#pool)
-  #   workspace:
-  #     clean: all 
-  #   variables:
-  #   - group: Build
-  #   steps:
-  #   - task: pekspro.pekspro-efcore-migration-script-generator.efcore-migration-script-generator.efcore-migration-script-generator-task@0
-  #     displayName: 'Generate Migration Scripts'
-  #     inputs:
-  #       projectpath: src/infrastructure/Places.Infrastructure.csproj
-  #       databasecontexts: DefaultDbContext
-  #       targetfolder: '$(Build.ArtifactStagingDirectory)'
-  #     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  #     env:
-  #       ConnectionStrings__Default: $(Place-Db-ConnectionString)
+# - job: BuildDBMigrationScript
+#   displayName: Building Database Migration Script
+#   pool:
+#     vmImage: $(build#pool)
+#   workspace:
+#     clean: all 
+#   variables:
+#   - group: Build
+#   steps:
+#   - task: pekspro.pekspro-efcore-migration-script-generator.efcore-migration-script-generator.efcore-migration-script-generator-task@0
+#     displayName: 'Generate Migration Scripts'
+#     inputs:
+#       projectpath: src/infrastructure/Places.Infrastructure.csproj
+#       databasecontexts: DefaultDbContext
+#       targetfolder: '$(Build.ArtifactStagingDirectory)'
+#     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+#     env:
+#       ConnectionStrings__Default: $(Place-Db-ConnectionString)
 
-  - task: PublishBuildArtifacts@1
-    displayName: Publishing Artifact
+- task: PublishBuildArtifacts@1
+  displayName: Publishing Artifact
