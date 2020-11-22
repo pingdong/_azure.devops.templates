@@ -1,6 +1,9 @@
 parameters:
 - name: workingDirectory
   type: string
+- name: variablesFile
+  type: string
+  default: ''
 - name: variables
   type: string
   default: ''
