@@ -6,19 +6,7 @@ parameters:
   default: ''
 
 steps:
-- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-  displayName: Download Terraform
-
-- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: Initailizing Backend
-  inputs:
-    command: init
-    commandOptions: ${{ parameters.variables }}
-    workingDirectory: ${{ parameters.workingDirectory }}
-  env:
-    TF_CLI_ARGS: -no-color
-    TF_CLI_ARGS_init: -backend=false
-    TF_INPUT: false
+- template: .\terraform.init.yml@templates
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: 'Validating'

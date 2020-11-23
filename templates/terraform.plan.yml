@@ -25,36 +25,13 @@ parameters:
   default: ''
 
 steps:
-- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
-  displayName: Download Terraform
-
-- ${{ if ne(length(parameters.azureSubscription), 0) }}:
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: Initializing
-    inputs:
-      command: init
-      workingDirectory: ${{ parameters.workingDirectory }}
-      backendType: azurerm
-      backendServiceArm: ${{ parameters.azureSubscription }}
-      backendAzureRmResourceGroupName: ${{ parameters.stateResourceGroup }}
-      backendAzureRmStorageAccountName: ${{ parameters.stateStorageAccount }}
-      backendAzureRmContainerName: ${{ parameters.stateStorageAccountContainer }}
-      backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
-    env:
-      TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=true
-      TF_INPUT: false
-
-- ${{ if eq(length(parameters.azureSubscription), 0) }}:
-  - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: Initializing
-    inputs:
-      command: init
-      workingDirectory: ${{ parameters.workingDirectory }}
-    env:
-      TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=false
-      TF_INPUT: false
+- template: .\terraform.init.yml@templates
+  parameters:
+    azureSubscription: ${{ parameters.azureSubscription }}
+    stateResourceGroup: ${{ parameters.stateResourceGroup }}
+    stateStorageAccount: ${{ parameters.stateStorageAccount }}
+    stateStorageAccountContainer: ${{ parameters.stateStorageAccountContainer }}
+    stateStorageAccountKey: ${{ parameters.stateStorageAccountKey }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Planning Infrastructure Change
