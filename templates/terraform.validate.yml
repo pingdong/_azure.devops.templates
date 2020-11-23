@@ -16,7 +16,8 @@ steps:
     commandOptions: ${{ parameters.variables }}
     workingDirectory: ${{ parameters.workingDirectory }}
   env:
-    TF_CLI_ARGS: '-no-color -backend=false'
+    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS_init: -backend=false
     TF_INPUT: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
