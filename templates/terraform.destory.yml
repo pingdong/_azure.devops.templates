@@ -8,6 +8,9 @@ parameters:
   type: string
   default: ''
 # Azure Backend
+- name: backendConfigFile
+  type: string
+  default: ''
 - name: azureSubscription
   type: string
   default: ''
@@ -43,6 +46,7 @@ steps:
     TF_CLI_ARGS: -no-color
     TF_CLI_ARGS_init: -backend=${{ gt(length(parameters.azureSubscription), 0) }}
     TF_INPUT: false
+    TF_CLI_CONFIG_FILE: ${{ parameters.backendConfigFile }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying Infrastructure Changes
