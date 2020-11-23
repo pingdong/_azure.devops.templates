@@ -53,7 +53,6 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
   env:
-    TF_CLI_ARGS: -no-color
-    TF_CLI_ARGS_destory: -auto-approve
+    TF_CLI_ARGS: -no-color -auto-approve
     TF_IN_AUTOMATATION: true
     TF_INPUT: false
