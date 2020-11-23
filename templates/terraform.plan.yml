@@ -41,7 +41,7 @@ steps:
     backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
   env:
     TF_CLI_ARGS: -no-color
-    TF_CLI_ARGS_init: -backend=${{ ge(length(parameters.azureSubscription), 0) }}
+    TF_CLI_ARGS_init: -backend=${{ gt(length(parameters.azureSubscription), 0) }}
     TF_INPUT: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
