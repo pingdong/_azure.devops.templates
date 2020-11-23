@@ -44,9 +44,8 @@ steps:
     backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
   env:
     TF_CLI_ARGS: -no-color
-    TF_CLI_ARGS_init: -backend=${{ gt(length(parameters.azureSubscription), 0) }}
+    TF_CLI_ARGS_init: -backend=${{ gt(length(parameters.azureSubscription), 0) }} -backend-config=${{ parameters.backendConfigFile }}
     TF_INPUT: false
-    TF_CLI_CONFIG_FILE: ${{ parameters.backendConfigFile }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Planning Infrastructure Change
