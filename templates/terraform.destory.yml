@@ -27,6 +27,7 @@ parameters:
 steps:
 - template: .\terraform.init.yml@templates
   parameters:
+    workingDirectory: ${{ parameters.workingDirectory }}
     azureSubscription: ${{ parameters.azureSubscription }}
     stateResourceGroup: ${{ parameters.stateResourceGroup }}
     stateStorageAccount: ${{ parameters.stateStorageAccount }}

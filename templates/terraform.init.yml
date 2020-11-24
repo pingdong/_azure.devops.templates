@@ -1,4 +1,6 @@
 parameters:
+- name: workingDirectory
+  type: string
 # Azure Backend
 - name: azureSubscription
   type: string
