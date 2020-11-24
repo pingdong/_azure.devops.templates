@@ -36,7 +36,7 @@ steps:
       backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
     env:
       TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=true -reconfigure
+      TF_CLI_ARGS_init: -backend=true
       TF_INPUT: false
 
 - ${{ if eq(length(parameters.azureSubscription), 0) }}:
@@ -44,9 +44,9 @@ steps:
     displayName: Initializing
     inputs:
       command: init
-      backendType: selfConfigured
       workingDirectory: ${{ parameters.workingDirectory }}
+      backendType: local
     env:
       TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=false -reconfigure
+      TF_CLI_ARGS_init: -backend=false
       TF_INPUT: false
