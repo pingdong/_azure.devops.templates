@@ -1,0 +1,64 @@
+parameters:
+- name: workingDirectory
+  type: string
+- name: variablesFile
+  type: string
+  default: ''
+- name: variables
+  type: string
+  default: ''
+# Azure Backend
+- name: azureSubscription
+  type: string
+  default: ''
+- name: stateResourceGroup
+  type: string
+  default: ''
+- name: stateStorageAccount
+  type: string
+  default: ''
+- name: stateStorageAccountContainer
+  type: string
+  default: ''
+- name: stateStorageAccountKey
+  type: string
+  default: ''
+
+steps:
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Initializing
+  inputs:
+    command: init
+    workingDirectory: ${{ parameters.workingDirectory }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS_init: -backend=false
+    TF_INPUT: false
+# - template: .\terraform.init.yml@templates
+#   parameters:
+#     workingDirectory: ${{ parameters.workingDirectory }}
+#     azureSubscription: ${{ parameters.azureSubscription }}
+#     stateResourceGroup: ${{ parameters.stateResourceGroup }}
+#     stateStorageAccount: ${{ parameters.stateStorageAccount }}
+#     stateStorageAccountContainer: ${{ parameters.stateStorageAccountContainer }}
+#     stateStorageAccountKey: ${{ parameters.stateStorageAccountKey }}
+
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Applying Infrastructure Changes
+  inputs:
+    command: apply
+    commandOptions: ${{ parameters.variables }}
+    secureFilePath: ${{ parameters.variablesFile }}
+    workingDirectory: ${{ parameters.workingDirectory }}
+    environmentServiceName: ${{ parameters.azureSubscription }}
+  env:
+    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS_apply: -auto-approve
+    TF_IN_AUTOMATATION: true
+    TF_INPUT: false
+
+- task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
+  displayName: Output to Environment Variables
+  inputs:
+    command: output
+    workingDirectory: ${{ parameters.workingDirectory }}
