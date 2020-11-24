@@ -44,8 +44,9 @@ steps:
     displayName: Initializing
     inputs:
       command: init
-      backendType: local
+      backendType: selfConfigured
       workingDirectory: ${{ parameters.workingDirectory }}
     env:
       TF_CLI_ARGS: -no-color
+      TF_CLI_ARGS_init: -backend=false
       TF_INPUT: false
