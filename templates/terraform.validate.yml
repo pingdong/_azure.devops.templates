@@ -7,7 +7,7 @@ parameters:
 
 steps:
 - template: .\terraform.init.yml@templates
-  inputs:
+  parameters:
     workingDirectory: ${{ parameters.workingDirectory }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
