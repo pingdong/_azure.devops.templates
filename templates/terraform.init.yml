@@ -1,6 +1,9 @@
 parameters:
 - name: workingDirectory
   type: string
+- name: withBackend
+  type: boolean
+  default: true
 # Azure Backend
 - name: azureSubscription
   type: string
@@ -36,7 +39,7 @@ steps:
       backendAzureRmKey: ${{ parameters.stateStorageAccountKey }}
     env:
       TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=true
+      TF_CLI_ARGS_init: -backend=${{ parameters.withBackend }}
       TF_INPUT: false
 
 - ${{ if eq(length(parameters.azureSubscription), 0) }}:
@@ -48,5 +51,5 @@ steps:
       backendType: local
     env:
       TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=true
+      TF_CLI_ARGS_init: -backend=${{ parameters.withBackend }}
       TF_INPUT: false
