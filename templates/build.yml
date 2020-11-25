@@ -46,7 +46,7 @@ steps:
 #     env:
 #       ConnectionStrings__Default: $(Place-Db-ConnectionString)
 
-- publish: 
+- publish: $(Build.ArtifactStagingDirectory)
   displayName: Publishing Artifact
   continueOnError: ${{ parameters.continueOnError }}
   artifact: ${{ parameters.artifact }}
