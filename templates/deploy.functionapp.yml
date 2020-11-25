@@ -34,7 +34,7 @@ steps:
       azureSubscription: ${{ parameters.azureSubscription }}
       appType: functionApp
       appName: ${{ parameters.funcName }}
-      package: '$(Pipeline.Workspace)/drop/*.zip'
+      package: '$(Pipeline.Workspace)/${{ parameters.artifact }}/*.zip'
 
 - ${{ if eq(parameters['enableSlot'], true) }}:
   - task: AzureWebApp@1
