@@ -39,7 +39,7 @@ steps:
   inputs:
     command: destory
     commandOptions: ${{ parameters.variables }}
-    secureFilePath: ${{ parameters.variablesFile }}
+    secureVarsFile: ${{ parameters.variablesFile }}
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
   env:

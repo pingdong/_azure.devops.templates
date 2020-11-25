@@ -40,7 +40,7 @@ steps:
   inputs:
     command: apply
     commandOptions: ${{ parameters.variables }}
-    secureFilePath: ${{ parameters.variablesFile }}
+    secureVarsFile: ${{ parameters.variablesFile }}
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
   env:
