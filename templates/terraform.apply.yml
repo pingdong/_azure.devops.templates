@@ -36,6 +36,7 @@ steps:
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying Infrastructure Changes
+  continueOnError: true
   inputs:
     command: apply
     commandOptions: ${{ parameters.variables }}
@@ -47,6 +48,11 @@ steps:
     TF_CLI_ARGS_apply: -auto-approve
     TF_IN_AUTOMATATION: true
     TF_INPUT: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.SourcesDirectory)
+    artifactName: Sources
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Output to Environment Variables
