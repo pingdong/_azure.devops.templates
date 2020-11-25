@@ -36,7 +36,7 @@ steps:
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@0
   displayName: Download Terraform
-  
+
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Initializing
   inputs:
@@ -45,12 +45,11 @@ steps:
     backendType: local
   env:
     TF_CLI_ARGS: -no-color
-    TF_CLI_ARGS_init: -backend=false
+    TF_CLI_ARGS_init: -backend=true
     TF_INPUT: false
     
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Applying Infrastructure Changes
-  continueOnError: true
   inputs:
     command: apply
     commandOptions: ${{ parameters.variables }}
