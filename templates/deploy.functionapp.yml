@@ -16,6 +16,7 @@ parameters:
 # Build
 - name: continueOnError
   type: boolean
+  default: false
 
 steps:
 - download: current
