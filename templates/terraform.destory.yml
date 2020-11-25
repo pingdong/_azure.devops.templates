@@ -35,7 +35,7 @@ steps:
     stateStorageAccountKey: ${{ parameters.stateStorageAccountKey }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: Applying Infrastructure Changes
+  displayName: Destorying Infrastructure Changes
   inputs:
     command: destory
     commandOptions: ${{ parameters.variables }}
@@ -43,6 +43,7 @@ steps:
     workingDirectory: ${{ parameters.workingDirectory }}
     environmentServiceName: ${{ parameters.azureSubscription }}
   env:
-    TF_CLI_ARGS: -no-color -auto-approve
+    TF_CLI_ARGS: -no-color
+    TF_CLI_ARGS_destory: -auto-approve
     TF_IN_AUTOMATATION: true
     TF_INPUT: false
