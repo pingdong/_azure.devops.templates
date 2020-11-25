@@ -13,12 +13,18 @@ parameters:
 - name: slotName
   type: string
   default: ''
-# Build
+# Pipeline
 - name: continueOnError
   type: boolean
   default: false
+# Deployment
 - name: artifact
+  type: string
   default: 'drop'
+- name: deployMethod
+  type: string
+  default: 'zipDeploy'
+
 
 steps:
 - download: current
@@ -35,6 +41,7 @@ steps:
       appType: functionApp
       appName: ${{ parameters.funcName }}
       package: '$(Pipeline.Workspace)/${{ parameters.artifact }}/*.zip'
+      deploymentMethod: ${{ parameters.deployMethod }}
 
 - ${{ if eq(parameters['enableSlot'], true) }}:
   - task: AzureFunctionApp@1
@@ -45,6 +52,8 @@ steps:
       appType: functionApp
       appName: ${{ parameters.funcName }}
       package: '$(Pipeline.Workspace)/drop/*.zip'
+      deploymentMethod: ${{ parameters.deployMethod }}
+      # Slot Support
       deployToSlotOrASE: true
       resourceGroupName: ${{ parameters.resourcegroupName }}
       slotName: ${{ parameters.slotName }}
