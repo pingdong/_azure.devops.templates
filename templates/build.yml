@@ -3,16 +3,21 @@ parameters:
   type: string
 - name: buildConfiguration
   type: string
+- name: continueOnError
+  type: boolean
+  default: false
 
 steps:
 - task: DotNetCoreCLI@2
   displayName: Restoring dependencies
+  continueOnError: ${{ parameters.continueOnError }}
   inputs:
     command: restore
     projects: '**/*.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+  continueOnError: ${{ parameters.continueOnError }}
   condition: succeeded()
   inputs:
     command: publish
@@ -41,3 +46,4 @@ steps:
 
 - task: PublishBuildArtifacts@1
   displayName: Publishing Artifact
+  continueOnError: ${{ parameters.continueOnError }}

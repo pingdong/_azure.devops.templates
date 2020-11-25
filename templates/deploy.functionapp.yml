@@ -13,15 +13,20 @@ parameters:
 - name: slotName
   type: string
   default: ''
+# Build
+- name: continueOnError
+  type: boolean
 
 steps:
 - download: current
   displayName: Getting Artifact
+  continueOnError: ${{ parameters.continueOnError }}
   artifact: drop
 
 - ${{ if eq(parameters['enableSlot'], false) }}:
   - task: AzureWebApp@1
     displayName: Deploying
+    continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
       appType: functionApp
@@ -31,6 +36,7 @@ steps:
 - ${{ if eq(parameters['enableSlot'], true) }}:
   - task: AzureWebApp@1
     displayName: Deploying to Slot ${{ parameters.slotName }}
+    continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
       appType: functionApp
@@ -42,6 +48,7 @@ steps:
 
   - task: AzureAppServiceManage@0
     displayName: Swapping Slot ${{ parameters.slotName }} with Production
+    continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
       action: 'Swap Slots'
