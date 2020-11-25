@@ -6,6 +6,8 @@ parameters:
 - name: continueOnError
   type: boolean
   default: false
+- name: artifact
+  default: 'drop'
 
 steps:
 - task: DotNetCoreCLI@2
@@ -44,6 +46,7 @@ steps:
 #     env:
 #       ConnectionStrings__Default: $(Place-Db-ConnectionString)
 
-- task: PublishBuildArtifacts@1
+- publish: 
   displayName: Publishing Artifact
   continueOnError: ${{ parameters.continueOnError }}
+  artifact: ${{ parameters.artifact }}

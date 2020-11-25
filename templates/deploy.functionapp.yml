@@ -17,12 +17,14 @@ parameters:
 - name: continueOnError
   type: boolean
   default: false
+- name: artifact
+  default: 'drop'
 
 steps:
 - download: current
   displayName: Getting Artifact
   continueOnError: ${{ parameters.continueOnError }}
-  artifact: drop
+  artifact: ${{ parameters.artifact }}
 
 - ${{ if eq(parameters['enableSlot'], false) }}:
   - task: AzureWebApp@1
