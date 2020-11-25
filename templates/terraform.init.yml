@@ -48,5 +48,5 @@ steps:
       backendType: local
     env:
       TF_CLI_ARGS: -no-color
-      TF_CLI_ARGS_init: -backend=false
+      TF_CLI_ARGS_init: -backend=true
       TF_INPUT: false
