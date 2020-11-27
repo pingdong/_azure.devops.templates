@@ -58,7 +58,7 @@ steps:
       slotName: ${{ parameters.slotName }}
 
   - task: AzureAppServiceManage@0
-    displayName: Swapping Slot ${{ parameters.slotName }} with Production
+    displayName: 'Swapping Slot: $[parameters.slotName] -> Production'
     continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
