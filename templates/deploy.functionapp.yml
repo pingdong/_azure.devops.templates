@@ -25,7 +25,6 @@ parameters:
   type: string
   default: 'zipDeploy'
 
-
 steps:
 - download: current
   displayName: Getting Artifact
