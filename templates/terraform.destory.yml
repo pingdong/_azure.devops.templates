@@ -37,7 +37,7 @@ steps:
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
   displayName: Destorying Infrastructure Changes
   inputs:
-    command: destory
+    command: destroy
     commandOptions: ${{ parameters.variables }}
     secureVarsFile: ${{ parameters.variablesFile }}
     workingDirectory: ${{ parameters.workingDirectory }}
