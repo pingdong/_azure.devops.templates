@@ -35,7 +35,7 @@ steps:
     stateStorageAccountKey: ${{ parameters.stateStorageAccountKey }}
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: Destorying Infrastructure Changes
+  displayName: Destroying Infrastructure Changes
   inputs:
     command: destroy
     commandOptions: ${{ parameters.variables }}
