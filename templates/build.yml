@@ -9,13 +9,18 @@ parameters:
 - name: artifact
   type: string
   default: 'drop'
+- name: forRelease
+  type: boolean
+  default: false
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@5
-  displayName: Update Assembly version
-  continueOnError: ${{ parameters.continueOnError }}
-  inputs:
-    updateAssemblyInfo: true
+
+- ${{ if eq(parameters['forRelease'], true) }}:
+  - task: gittools.gitversion.gitversion-task.GitVersion@5
+    displayName: Update Assembly version
+    continueOnError: ${{ parameters.continueOnError }}
+    inputs:
+      updateAssemblyInfo: true
 
 - task: DotNetCoreCLI@2
   displayName: Restoring dependencies
