@@ -15,11 +15,12 @@ steps:
 - task: UseGitVersion@5
   displayName: Update Assembly version
   inputs:
-    versionSpec: $(parameters.versionSpec)
+    versionSpec: ${{ parameters.versionSpec }}
     updateAssemblyInfo: true
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
   displayName: Update Build Number $(GitVersion.SemVer)
+  continueOnError: ${{ parameters.continueOnError }}
 
 - task: DotNetCoreCLI@2
   displayName: Restoring dependencies
