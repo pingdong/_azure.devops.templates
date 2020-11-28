@@ -8,7 +8,6 @@ parameters:
   default: false
 - name: artifact
   default: 'drop'
-# Version
 - name: versionSpec
   type: string
 
