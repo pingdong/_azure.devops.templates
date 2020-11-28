@@ -1,4 +1,2 @@
 variables:
-- name : GitVersion.SemVer
-  type : string
-  default : ''
+  GitVersion.SemVer: ''
