@@ -1,0 +1,7 @@
+variables:
+- name : local#versionSpec
+  type : string
+  default : ${{ parameters.versionMajor }}.${{ parameters.versionMinor }}.${{ parameters.versionPatch }}.x
+- name : GitVersion.SemVer
+  type : string
+  default : ''

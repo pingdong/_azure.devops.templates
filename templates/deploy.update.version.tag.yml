@@ -1,6 +1,0 @@
-parameters:
-- name: buildNumber
-  type: string
-
-steps:
-# TODO: Create Version Tag in repo

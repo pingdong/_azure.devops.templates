@@ -16,14 +16,6 @@ parameters:
 - name: versionPatch
   type: string
 
-variables:
-- name : local#versionSpec
-  type : string
-  default : ${{ parameters.versionMajor }}.${{ parameters.versionMinor }}.${{ parameters.versionPatch }}.x
-- name : GitVersion.SemVer
-  type : string
-  default : ''
-
 steps:
 - task: UseGitVersion@5
   displayName: Update Assembly version
@@ -52,6 +44,14 @@ steps:
     versioningScheme: byEnvVar
     versionEnvVar: 'GitVersion.SemVer'
     arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+
+# TODO: Create Repo Version Tag
+
+
+
+
+
+
 
 # - job: BuildDBMigrationScript
 #   displayName: Building Database Migration Script
