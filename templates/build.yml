@@ -14,7 +14,7 @@ parameters:
   default: 'drop'
 
 steps:
-- task: UseGitVersion@5
+- task: gittools.gitversion-netcore-preview.gitversion-netcore-task.GitVersionNetCore@5
   displayName: Update Assembly version
   continueOnError: ${{ parameters.continueOnError }}
   inputs:
