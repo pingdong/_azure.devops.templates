@@ -17,10 +17,6 @@ steps:
   inputs:
     updateAssemblyInfo: true
 
-- script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
-  displayName: Update Build Number $(GitVersion.SemVer)
-  continueOnError: ${{ parameters.continueOnError }}
-
 - task: DotNetCoreCLI@2
   displayName: Restoring dependencies
   continueOnError: ${{ parameters.continueOnError }}
@@ -39,33 +35,6 @@ steps:
     versioningScheme: byEnvVar
     versionEnvVar: 'GitVersion.SemVer'
     arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
-
-# TODO: Create Repo Version Tag
-
-
-
-
-
-
-
-# - job: BuildDBMigrationScript
-#   displayName: Building Database Migration Script
-#   pool:
-#     vmImage: $(build#pool)
-#   workspace:
-#     clean: all 
-#   variables:
-#   - group: Build
-#   steps:
-#   - task: pekspro.pekspro-efcore-migration-script-generator.efcore-migration-script-generator.efcore-migration-script-generator-task@0
-#     displayName: 'Generate Migration Scripts'
-#     inputs:
-#       projectpath: src/infrastructure/Places.Infrastructure.csproj
-#       databasecontexts: DefaultDbContext
-#       targetfolder: '$(Build.ArtifactStagingDirectory)'
-#     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-#     env:
-#       ConnectionStrings__Default: $(Place-Db-ConnectionString)
 
 - publish: $(Build.ArtifactStagingDirectory)
   displayName: Publishing Artifact
