@@ -8,8 +8,32 @@ parameters:
   default: false
 - name: artifact
   default: 'drop'
+# Version
+- name: versionMajor
+  type: string
+- name: versionMinor
+  type: string
+- name: versionPatch
+  type: string
+
+variables:
+- name : local#versionSpec
+  type : string
+  default : ${{ parameters.versionMajor }}.${{ parameters.versionMinor }}.${{ parameters.versionPatch }}.x
+- name : GitVersion.SemVer
+  type : string
+  default : ''
 
 steps:
+- task: UseGitVersion@5
+  displayName: Update Assembly version
+  inputs:
+    versionSpec: $(local#versionSpec)
+    updateAssemblyInfo: true
+
+- script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
+  displayName: Update Build Number $(GitVersion.SemVer)
+
 - task: DotNetCoreCLI@2
   displayName: Restoring dependencies
   continueOnError: ${{ parameters.continueOnError }}
@@ -25,6 +49,8 @@ steps:
     command: publish
     publishWebProjects: false
     projects: '**/${{ parameters.projectName }}.csproj'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'GitVersion.SemVer'
     arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
 
 # - job: BuildDBMigrationScript
