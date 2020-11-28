@@ -5,7 +5,6 @@ parameters:
   type: string
 - name: versionSpec
   type: string
-  default: ''
 - name: continueOnError
   type: boolean
   default: false
