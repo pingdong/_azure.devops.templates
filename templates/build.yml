@@ -13,12 +13,16 @@ parameters:
   default: 'drop'
 
 steps:
+- script: echo "${{ parameters.versionSpec }}"
+
 - task: gittools.gitversion.gitversion-task.GitVersion@5
   displayName: Update Assembly version
   continueOnError: ${{ parameters.continueOnError }}
   inputs:
     versionSpec: ${{ parameters.versionSpec }}
     updateAssemblyInfo: true
+
+- script: echo $(GitVersion.SemVer)
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
   displayName: Update Build Number $(GitVersion.SemVer)
