@@ -9,18 +9,14 @@ parameters:
 - name: artifact
   default: 'drop'
 # Version
-- name: versionMajor
-  type: string
-- name: versionMinor
-  type: string
-- name: versionPatch
+- name: versionSpec
   type: string
 
 steps:
 - task: UseGitVersion@5
   displayName: Update Assembly version
   inputs:
-    versionSpec: $(local#versionSpec)
+    versionSpec: ${{ parameters.versionSpec }}
     updateAssemblyInfo: true
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
