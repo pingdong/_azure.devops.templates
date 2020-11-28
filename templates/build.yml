@@ -15,7 +15,7 @@ steps:
 - task: UseGitVersion@5
   displayName: Update Assembly version
   inputs:
-    versionSpec: ${{ parameters.versionSpec }}
+    versionSpec: $(parameters.versionSpec)
     updateAssemblyInfo: true
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
