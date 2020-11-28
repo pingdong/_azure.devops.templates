@@ -14,7 +14,6 @@ parameters:
   default: false
 
 steps:
-
 - ${{ if eq(parameters['forRelease'], true) }}:
   - task: gittools.gitversion.gitversion-task.GitVersion@5
     displayName: Update Assembly version
