@@ -5,6 +5,7 @@ parameters:
   type: string
 - name: versionSpec
   type: string
+  default: ''
 - name: continueOnError
   type: boolean
   default: false
@@ -17,7 +18,7 @@ steps:
   displayName: Update Assembly version
   continueOnError: ${{ parameters.continueOnError }}
   inputs:
-    versionSpec: ${{ parameters.versionSpec }}
+    versionSpec: '1.0.0.x' #${{ parameters.versionSpec }}
     updateAssemblyInfo: true
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
