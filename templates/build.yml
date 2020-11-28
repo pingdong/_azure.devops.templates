@@ -3,13 +3,14 @@ parameters:
   type: string
 - name: buildConfiguration
   type: string
+- name: versionSpec
+  type: string
 - name: continueOnError
   type: boolean
   default: false
 - name: artifact
-  default: 'drop'
-- name: versionSpec
   type: string
+  default: 'drop'
 
 steps:
 - task: UseGitVersion@5
