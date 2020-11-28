@@ -18,7 +18,7 @@ steps:
   displayName: Update Assembly version
   continueOnError: ${{ parameters.continueOnError }}
   inputs:
-    versionSpec: '1.0.0.x' #${{ parameters.versionSpec }}
+    versionSpec: ${{ parameters.versionSpec }}
     updateAssemblyInfo: true
 
 - script: echo "##vso[build.updatebuildnumber]$(GitVersion.SemVer)"
