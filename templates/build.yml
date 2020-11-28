@@ -14,6 +14,7 @@ parameters:
 steps:
 - task: UseGitVersion@5
   displayName: Update Assembly version
+  continueOnError: ${{ parameters.continueOnError }}
   inputs:
     versionSpec: ${{ parameters.versionSpec }}
     updateAssemblyInfo: true
