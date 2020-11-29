@@ -26,7 +26,7 @@ jobs:
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
     value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
-  - name  : 'disable.coverage.autogenerate'
+  - name  : disable.coverage.autogenerate
     value : true
   steps:
   # Preparing
