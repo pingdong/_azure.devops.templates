@@ -3,17 +3,15 @@ parameters:
   type: string
 
 jobs:
-- job: VulnerabilitiesValidation
-  displayName: Vulnerabilities Validation
+- job: SecurityValidating
+  displayName: Security Validating
   pool:
     vmImage: ${{ parameters.vmImage }}
   workspace:
     clean: all
   steps:
-  # WhiteSource Bolt
-  - task: WhiteSource Bolt@20
-    displayName: Running WhiteSource Bolt
-    # Free License 5 Run / Day
+  - task: WhiteSource Bolt@20  # Free License 5 Run / Day
+    displayName: Vulnerabilities Scanning    
     condition: |
       or 
       (
