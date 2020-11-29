@@ -25,7 +25,7 @@ jobs:
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
     value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
-  - name  : disable.coverage.autogenerate
+  - name  : 'disable.coverage.autogenerate'
     value : true
   steps:
   # Preparing
@@ -81,15 +81,8 @@ jobs:
     inputs:
       reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
       targetdir: $(Build.SourcesDirectory)/Coverage
-      reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges;SonarQube
+      reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges
       historydir: $(local#codecoveragehistory.directory)
-
-  - task: PublishCodeCoverageResults@1
-    displayName: Publishing Test Coverage Report
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
-      reportDirectory: $(Build.SourcesDirectory)/Coverage
 
   - task: UniversalPackages@0
     displayName: Saving Test Coverage History
@@ -103,6 +96,13 @@ jobs:
       versionOption: patch
       packagePublishDescription: Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)
       verbosity: Information
+
+  - task: PublishCodeCoverageResults@1
+    displayName: Publishing Test Coverage Report
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
+      reportDirectory: $(Build.SourcesDirectory)/Coverage
 
   - task: SonarCloudAnalyze@1
     displayName: Running SonarCloud Code Analysis
