@@ -83,7 +83,7 @@ jobs:
     inputs:
       reports: '$(Build.SourcesDirectory)/**/coverage.opencover.xml'
       targetdir: $(Build.SourcesDirectory)/Coverage
-      reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges
+      reporttypes: Html;HtmlInline_AzurePipelines_Dark;Cobertura;Badges;SonarQube;
       historydir: $(local#codecoveragehistory.directory)
 
   - task: UniversalPackages@0
