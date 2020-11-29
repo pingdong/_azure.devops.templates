@@ -12,6 +12,9 @@ parameters:
 - name: forRelease
   type: boolean
   default: false
+- name: publishWebProjects
+  type: boolean
+  default: false
 
 steps:
 - ${{ if eq(parameters['forRelease'], true) }}:
@@ -28,17 +31,29 @@ steps:
     command: restore
     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
-  continueOnError: ${{ parameters.continueOnError }}
-  condition: succeeded()
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: '**/${{ parameters.projectName }}.csproj'
-    versioningScheme: byEnvVar
-    versionEnvVar: 'GitVersion.SemVer'
-    arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+- ${{ if eq(parameters['forRelease'], true) }}:
+  - task: DotNetCoreCLI@2
+    displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+    continueOnError: ${{ parameters.continueOnError }}
+    condition: succeeded()
+    inputs:
+      command: publish
+      publishWebProjects: ${{ parameters.publishWebProjects }}
+      projects: '**/${{ parameters.projectName }}.csproj'
+      versioningScheme: byEnvVar
+      versionEnvVar: 'GitVersion.SemVer'
+      arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+
+- ${{ if eq(parameters['forRelease'], false) }}:
+  - task: DotNetCoreCLI@2
+    displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+    continueOnError: ${{ parameters.continueOnError }}
+    condition: succeeded()
+    inputs:
+      command: publish
+      publishWebProjects: ${{ parameters.publishWebProjects }}
+      projects: '**/${{ parameters.projectName }}.csproj'
+      arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
 
 - publish: $(Build.ArtifactStagingDirectory)
   displayName: Publishing Artifact
