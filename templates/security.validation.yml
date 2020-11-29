@@ -10,7 +10,7 @@ jobs:
   workspace:
     clean: all
   steps:
-  - task: WhiteSource Bolt@20  # Free License 5 Run / Day
+  - task: WhiteSource Bolt@20
     displayName: Vulnerabilities Scanning    
     condition: |
       or 
