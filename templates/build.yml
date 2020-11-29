@@ -31,6 +31,17 @@ steps:
     command: restore
     projects: '**/*.csproj'
 
+- ${{ if eq(parameters['forRelease'], false) }}:
+  - task: DotNetCoreCLI@2
+    displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+    continueOnError: ${{ parameters.continueOnError }}
+    condition: succeeded()
+    inputs:
+      command: publish
+      publishWebProjects: ${{ parameters.publishWebProjects }}
+      projects: '**/${{ parameters.projectName }}.csproj'
+      arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+
 - ${{ if eq(parameters['forRelease'], true) }}:
   - task: DotNetCoreCLI@2
     displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
@@ -43,17 +54,12 @@ steps:
       versioningScheme: byEnvVar
       versionEnvVar: 'GitVersion.SemVer'
       arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
-
-- ${{ if eq(parameters['forRelease'], false) }}:
-  - task: DotNetCoreCLI@2
-    displayName: 'Building with Configuration: ${{ parameters.buildConfiguration }}'
+  
+  - task: mspremier.BuildQualityChecks.QualityChecks-task.BuildQualityChecks@7
+    displayName: Check Build Quality
     continueOnError: ${{ parameters.continueOnError }}
-    condition: succeeded()
     inputs:
-      command: publish
-      publishWebProjects: ${{ parameters.publishWebProjects }}
-      projects: '**/${{ parameters.projectName }}.csproj'
-      arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+      checkCoverage: false
 
 - publish: $(Build.ArtifactStagingDirectory)
   displayName: Publishing Artifact
