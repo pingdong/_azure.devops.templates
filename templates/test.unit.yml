@@ -5,7 +5,7 @@ parameters:
   type: string
 - name: projectName
   type: string
-- name: sonarProjectKey
+- name: sonarCloudProjectKey
   type: string
   default: ''
 - name: coverageHistoryFeed
@@ -24,7 +24,7 @@ jobs:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
   - name  : local#sonarCloud.key
-    value : ${{ lower(parameters.sonarProjectKey) }}
+    value : ${{ lower(parameters.sonarCloudProjectKey) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
     value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
@@ -44,7 +44,7 @@ jobs:
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
-  - ${{ if ne(length(parameters.sonarProjectKey), 0) }}:
+  - ${{ if ne(length(parameters.sonarCloudProjectKey), 0) }}:
     - task: SonarCloudPrepare@1
       displayName: Preparing SonarCloud Code Analysis
       condition: |
@@ -108,7 +108,7 @@ jobs:
       summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
       reportDirectory: $(Build.SourcesDirectory)/Coverage
 
-  - ${{ if ne(length(parameters.sonarProjectKey), 0) }}:
+  - ${{ if ne(length(parameters.sonarCloudProjectKey), 0) }}:
     - task: SonarCloudAnalyze@1
       displayName: Running SonarCloud Code Analysis
       condition: |
