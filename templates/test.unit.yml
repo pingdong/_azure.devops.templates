@@ -5,6 +5,9 @@ parameters:
   type: string
 - name: projectName
   type: string
+- name: sonarProjectKey
+  type: string
+  default: ''
 - name: coverageHistoryFeed
   type: string
 - name: sonarcloudOrganization
@@ -20,8 +23,8 @@ jobs:
   variables:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
-  - name  : local#project.name
-    value : ${{ lower(parameters.projectName) }}
+  - name  : local#sonarCloud.key
+    value : ${{ lower(parameters.sonarProjectKey) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
     value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
@@ -41,22 +44,23 @@ jobs:
       vstsFeedPackage: $(local#codecoveragehistory.directory)
       vstsPackageVersion: 0.*
 
-  - task: SonarCloudPrepare@1
-    displayName: Preparing SonarCloud Code Analysis
-    condition: |
-      or
-      (
-        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-        eq(variables['Build.Reason'], 'PullRequest')
-      )
-    inputs:
-      SonarCloud: SonarCloud
-      organization: ${{ parameters.sonarcloudOrganization }}
-      projectKey: $(local#project.name)
-      projectName: $(local#project.name)
-      extraProperties: |
-        sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
+  - ${{ if ne(length(parameters.sonarProjectKey), 0) }}:
+    - task: SonarCloudPrepare@1
+      displayName: Preparing SonarCloud Code Analysis
+      condition: |
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.Reason'], 'PullRequest')
+        )
+      inputs:
+        SonarCloud: SonarCloud
+        organization: ${{ parameters.sonarcloudOrganization }}
+        projectKey: $(local#sonarCloud.key)
+        projectName: $(local#sonarCloud.key)
+        extraProperties: |
+          sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
+          sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
 
   # Building
   - task: DotNetCoreCLI@2
@@ -104,20 +108,21 @@ jobs:
       summaryFileLocation: $(Build.SourcesDirectory)/Coverage/Cobertura.xml
       reportDirectory: $(Build.SourcesDirectory)/Coverage
 
-  - task: SonarCloudAnalyze@1
-    displayName: Running SonarCloud Code Analysis
-    condition: |
-      or
-      (
-        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-        eq(variables['Build.Reason'], 'PullRequest')
-      )
+  - ${{ if ne(length(parameters.sonarProjectKey), 0) }}:
+    - task: SonarCloudAnalyze@1
+      displayName: Running SonarCloud Code Analysis
+      condition: |
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.Reason'], 'PullRequest')
+        )
 
-  - task: SonarCloudPublish@1
-    displayName: Publishing SonarCloud Analysis Result
-    condition: |
-      or
-      (
-        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-        eq(variables['Build.Reason'], 'PullRequest')
-      )
+    - task: SonarCloudPublish@1
+      displayName: Publishing SonarCloud Analysis Result
+      condition: |
+        or
+        (
+          eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+          eq(variables['Build.Reason'], 'PullRequest')
+        )
