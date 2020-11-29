@@ -3,8 +3,8 @@ parameters:
   type: string
 
 jobs:
-- job: StaticTesting
-  displayName: Static Testing
+- job: VulnerabilitiesValidation
+  displayName: Vulnerabilities Validation
   pool:
     vmImage: ${{ parameters.vmImage }}
   workspace:
