@@ -23,8 +23,6 @@ jobs:
   variables:
   - name  : local#codecoveragehistory.directory
     value : $(Build.ArtifactStagingDirectory)/history
-  - name  : local#sonarCloud.key
-    value : ${{ lower(parameters.sonarCloudProjectKey) }}
   - name  : local#codecoveragehistory.directory
             # Have to use compile-time expression here to access parameter
     value : ${{ lower(parameters.projectName) }}.$(Build.SourceBranchName)
@@ -56,8 +54,8 @@ jobs:
       inputs:
         SonarCloud: SonarCloud
         organization: ${{ parameters.sonarcloudOrganization }}
-        projectKey: $(local#sonarCloud.key)
-        projectName: $(local#sonarCloud.key)
+        projectKey: ${{ parameters.sonarCloudProjectKey }}
+        projectName: ${{ parameters.sonarCloudProjectKey }}
         extraProperties: |
           sonar.coverage.exclusions=**/*[Uu]nit[Tt]ests*/**/*
           sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/coverage.opencover.xml
