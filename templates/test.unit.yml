@@ -44,7 +44,7 @@ jobs:
 
   - ${{ if ne(length(parameters.sonarCloudProjectKey), 0) }}:
     - task: SonarCloudPrepare@1
-      displayName: Preparing SonarCloud Code Analysis
+      displayName: Preparing SonarCloud
       condition: |
         or
         (
@@ -70,7 +70,7 @@ jobs:
 
   # Testing
   - task: DotNetCoreCLI@2
-    displayName: Running Unit Testings
+    displayName: Running Unit Tests
     inputs:
       command: test
       arguments: '--no-build --configuration ${{ parameters.buildConfiguration }} /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
@@ -108,7 +108,7 @@ jobs:
 
   - ${{ if ne(length(parameters.sonarCloudProjectKey), 0) }}:
     - task: SonarCloudAnalyze@1
-      displayName: Running SonarCloud Code Analysis
+      displayName: Running SonarCloud Analysis
       condition: |
         or
         (

@@ -49,7 +49,7 @@ steps:
     TF_INPUT: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: Send Output to Environment Variables
+  displayName: Publishing Changing Output
   inputs:
     command: output
     workingDirectory: ${{ parameters.workingDirectory }}

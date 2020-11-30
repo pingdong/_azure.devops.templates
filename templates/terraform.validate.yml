@@ -12,6 +12,6 @@ steps:
     withBackend: false
 
 - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-  displayName: 'Validating'
+  displayName: Validating
   inputs:
     workingDirectory: ${{ parameters.workingDirectory }}

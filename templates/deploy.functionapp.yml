@@ -33,7 +33,7 @@ steps:
 
 - ${{ if eq(parameters['enableSlot'], false) }}:
   - task: AzureFunctionApp@1
-    displayName: Deploying
+    displayName: Deploying Function App
     continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}
@@ -44,7 +44,7 @@ steps:
 
 - ${{ if eq(parameters['enableSlot'], true) }}:
   - task: AzureFunctionApp@1
-    displayName: Deploying with Stage Slot
+    displayName: Deploying Function App with Slot
     continueOnError: ${{ parameters.continueOnError }}
     inputs:
       azureSubscription: ${{ parameters.azureSubscription }}

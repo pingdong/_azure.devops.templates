@@ -19,7 +19,7 @@ parameters:
 steps:
 - ${{ if eq(parameters['forRelease'], true) }}:
   - task: gittools.gitversion.gitversion-task.GitVersion@5
-    displayName: Update Assembly version
+    displayName: Updating Assembly Version
     continueOnError: ${{ parameters.continueOnError }}
     inputs:
       updateAssemblyInfo: true
@@ -56,7 +56,7 @@ steps:
       arguments: '--no-restore --configuration ${{ parameters.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
   
   - task: mspremier.BuildQualityChecks.QualityChecks-task.BuildQualityChecks@7
-    displayName: Check Build Quality
+    displayName: Checking Build Quality
     continueOnError: ${{ parameters.continueOnError }}
     inputs:
       checkCoverage: false

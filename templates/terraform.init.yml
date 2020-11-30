@@ -27,7 +27,7 @@ steps:
   
 - ${{ if ne(length(parameters.stateStorageAccountKey), 0) }}:
   - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: Initializing
+    displayName: Initializing Terraform Backend
     inputs:
       command: init
       workingDirectory: ${{ parameters.workingDirectory }}
@@ -44,7 +44,7 @@ steps:
 
 - ${{ if eq(length(parameters.stateStorageAccountKey), 0) }}:
   - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-cli.TerraformCLI@0
-    displayName: Initializing
+    displayName: Initializing Terraform Backend
     inputs:
       command: init
       workingDirectory: ${{ parameters.workingDirectory }}
